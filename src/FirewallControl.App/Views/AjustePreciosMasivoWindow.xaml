@@ -1,0 +1,138 @@
+<Window x:Class="FirewallControl.App.Views.AjustePreciosMasivoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ajuste Masivo de Precios (crear_productos_ajuste.scx)"
+        Width="1040" Height="700"
+        MinWidth="860" MinHeight="560"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ScreenBgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" Style="{StaticResource AtelierCardStyle}" Padding="18,14" Margin="0,0,0,12">
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="OPERACIÓN DE ALTO IMPACTO · ADMIN" Style="{StaticResource EyebrowLabelStyle}"/>
+                    <TextBlock Text="Ajuste Masivo de Precios de Venta" Style="{StaticResource PageTitleStyle}" FontSize="21"/>
+                    <TextBlock Text="Replica crear_productos_ajuste.scx y abm_ajusteprecio.scx usando porcentajes de utilidad o incremento filtrado."
+                               Style="{StaticResource SubtitleTextStyle}"/>
+                </StackPanel>
+                <Border x:Name="BadgeAdmin" Background="{DynamicResource SuccessBgBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}"
+                        BorderThickness="1" CornerRadius="12" Padding="12,6" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="TxtAdminStatus" Text="🔐 Verificación ADMIN activa" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="Bold" FontSize="12"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- MODO Y FILTROS -->
+        <Border Grid.Row="1" Style="{StaticResource AtelierCardStyle}" Padding="16" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.15*"/>
+                    <ColumnDefinition Width="18"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="MODO DE RECÁLCULO" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,8"/>
+                    <RadioButton x:Name="RbModoUtilidad" Content="Recálculo VFP por % Utilidad de Empresa (Listas 1 a 7 sobre Costo 1)"
+                                 IsChecked="True" FontWeight="SemiBold" Margin="0,0,0,8" Checked="ModeRadio_Changed"/>
+                    <Grid x:Name="PanelUtilidades" Margin="18,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,6,0"><TextBlock Text="% U1" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtU1" Text="80"/></StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,6,0"><TextBlock Text="% U2" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtU2" Text="65"/></StackPanel>
+                        <StackPanel Grid.Column="2" Margin="0,0,6,0"><TextBlock Text="% U3" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtU3" Text="40"/></StackPanel>
+                        <StackPanel Grid.Column="3" Margin="0,0,6,0"><TextBlock Text="% U4" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtU4" Text="25"/></StackPanel>
+                        <StackPanel Grid.Column="4" Margin="0,0,6,0"><TextBlock Text="% U5" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtU5" Text="100"/></StackPanel>
+                        <StackPanel Grid.Column="5" Margin="0,0,6,0"><TextBlock Text="% U6" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtU6" Text="107"/></StackPanel>
+                        <StackPanel Grid.Column="6"><TextBlock Text="% U7" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtU7" Text="120"/></StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="RbModoDelta" Content="Variación porcentual directa sobre precios actuales (ej. +10 o -5 %):"
+                                     FontWeight="SemiBold" VerticalAlignment="Center" Checked="ModeRadio_Changed"/>
+                        <TextBox x:Name="TxtFlatDelta" Text="10" Width="75" Margin="8,0,0,0" IsEnabled="False"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="ALCANCE / FILTROS OPCIONALES" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,8"/>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="85"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Grupo:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="CmbGrupo" Grid.Column="1" DisplayMemberPath="Descripcion" SelectedValuePath="IdGrupoProducto"/>
+                    </Grid>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="85"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Marca:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="CmbMarca" Grid.Column="1" DisplayMemberPath="Descripcion" SelectedValuePath="IdMarcaProducto"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="85"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Proveedor:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="CmbProveedor" Grid.Column="1" DisplayMemberPath="Descripcion" SelectedValuePath="IdProveedor"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- BARRA ACCIÓN PREVIEW -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="👁 Previsualizar Impacto [F5]" Style="{StaticResource PrimaryButtonStyle}"
+                    Padding="16,8" Margin="0,0,10,0" Click="BtnPreview_Click"/>
+            <Button Content="⚡ Ejecutar Ajuste Masivo (ADMIN)" Style="{StaticResource SuccessButtonStyle}"
+                    Padding="18,8" Margin="0,0,10,0" Click="BtnExecute_Click"/>
+            <Button Content="Cerrar [ESC]" Style="{StaticResource SecondaryButtonStyle}"
+                    Padding="14,8" Click="BtnClose_Click"/>
+        </StackPanel>
+
+        <!-- GRILLA VISTA PREVIA -->
+        <Border Grid.Row="3" Style="{StaticResource AtelierCardStyle}" Padding="6">
+            <DataGrid x:Name="GridPreview" AutoGenerateColumns="False" IsReadOnly="True" BorderThickness="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="CÓDIGO" Binding="{Binding Codigo}" Width="110" FontWeight="Bold"/>
+                    <DataGridTextColumn Header="DESCRIPCIÓN" Binding="{Binding Descripcion}" Width="*"/>
+                    <DataGridTextColumn Header="COSTO 1" Binding="{Binding Costo1, StringFormat=N0}" Width="95"/>
+                    <DataGridTextColumn Header="P1 ACTUAL" Binding="{Binding Precio1Actual, StringFormat=N0}" Width="110"/>
+                    <DataGridTextColumn Header="P1 NUEVO" Binding="{Binding Precio1Nuevo, StringFormat=N0}" Width="110" FontWeight="Bold"/>
+                    <DataGridTextColumn Header="P2 NUEVO" Binding="{Binding Precio2Nuevo, StringFormat=N0}" Width="100"/>
+                    <DataGridTextColumn Header="P3 NUEVO" Binding="{Binding Precio3Nuevo, StringFormat=N0}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <Border Grid.Row="4" Style="{StaticResource StatusBarStyle}" Padding="14,8" Margin="0,10,0,0">
+            <TextBlock x:Name="TxtStatus" Text="Cargue una vista previa antes de aplicar el ajuste." FontWeight="SemiBold"/>
+        </Border>
+    </Grid>
+</Window>

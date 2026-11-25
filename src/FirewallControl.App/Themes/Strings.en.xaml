@@ -1,0 +1,66 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="Str_Nav_Clientes">Customers</sys:String>
+    <sys:String x:Key="Str_Nav_Proveedor">Suppliers</sys:String>
+    <sys:String x:Key="Str_Nav_Vendedor">Sellers</sys:String>
+    <sys:String x:Key="Str_Nav_Pagos">Payments</sys:String>
+    <sys:String x:Key="Str_Nav_Cobros">Collections</sys:String>
+    <sys:String x:Key="Str_Nav_MovCaja">Cash Flow</sys:String>
+    <sys:String x:Key="Str_Nav_Productos">Products</sys:String>
+
+    <sys:String x:Key="Str_Btn_CambiarUsuario">Switch User</sys:String>
+    <sys:String x:Key="Str_Btn_Tema">🎨 Theme</sys:String>
+    <sys:String x:Key="Str_Btn_Ajustes">⚙ Settings [F4]</sys:String>
+    <sys:String x:Key="Str_Btn_Actualizar">⟳ Refresh</sys:String>
+
+    <sys:String x:Key="Str_Kpi_CatalogoActivo">ACTIVE CATALOG</sys:String>
+    <sys:String x:Key="Str_Kpi_FlujoCajaHoy">TODAY CASH FLOW</sys:String>
+    <sys:String x:Key="Str_Kpi_VentasHoy">TODAY SALES</sys:String>
+    <sys:String x:Key="Str_Kpi_AgendaHoy">TODAY AGENDA</sys:String>
+
+    <sys:String x:Key="Str_Sec_OperacionDiaria">Daily Operations &amp; Quick Shortcuts</sys:String>
+    <sys:String x:Key="Str_Sec_AtajosRapidos">Quick shortcuts · Click or keyboard</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaVenta">New Sale</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaVentaSub">Billing &amp; checkout (Registers 1–5)</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaCompra">New Purchase</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaCompraSub">Purchase entry</sys:String>
+    <sys:String x:Key="Str_Tile_Pedidos">Purchase Orders</sys:String>
+    <sys:String x:Key="Str_Tile_PedidosSub">Supplier requests</sys:String>
+    <sys:String x:Key="Str_Tile_Presupuestos">Quotes</sys:String>
+    <sys:String x:Key="Str_Tile_PresupuestosSub">Quick estimates</sys:String>
+    <sys:String x:Key="Str_Tile_InformesLucro">Reports &amp; Profit</sys:String>
+    <sys:String x:Key="Str_Tile_InformesLucroSub">Audit &amp; profitability</sys:String>
+    <sys:String x:Key="Str_Tile_AgendaDia">Daily Agenda</sys:String>
+    <sys:String x:Key="Str_Tile_AgendaDiaSub">No pending alerts today</sys:String>
+
+    <sys:String x:Key="Str_Sec_ActividadReciente">Recent Commercial Activity</sys:String>
+    <sys:String x:Key="Str_Btn_VerInforme">View Report →</sys:String>
+    <sys:String x:Key="Str_Tab_UltimasVentas">🕒  Latest Sales</sys:String>
+    <sys:String x:Key="Str_Tab_TopVendidos">🔥  Top Selling</sys:String>
+
+    <sys:String x:Key="Str_Sec_CotizacionesDia">Daily Exchange Rates</sys:String>
+    <sys:String x:Key="Str_Btn_Refrescar">Refresh</sys:String>
+    <sys:String x:Key="Str_Col_Moneda">CURRENCY</sys:String>
+    <sys:String x:Key="Str_Col_Compra">BUY</sys:String>
+    <sys:String x:Key="Str_Col_Venta">SELL</sys:String>
+
+    <sys:String x:Key="Str_Brand_Tagline">Point of Sale &amp; ERP Management</sys:String>
+    <sys:String x:Key="Str_Badge_LicenciaActiva">ACTIVE LICENSE</sys:String>
+    <sys:String x:Key="Str_Btn_Minimizar">Minimize Window</sys:String>
+    <sys:String x:Key="Str_Btn_AcercaDe">About Sefiros POS</sys:String>
+
+    <sys:String x:Key="Str_Factory_OfflineNotice">Factory mode ready · Configure your MySQL server in Settings [F4] or 🌐 MySQL.</sys:String>
+    <sys:String x:Key="Str_Factory_ModeBadge">● FACTORY MODE</sys:String>
+
+    <sys:String x:Key="Str_Settings_Title">Settings</sys:String>
+    <sys:String x:Key="Str_Settings_Close">Close</sys:String>
+    <sys:String x:Key="Str_Settings_Back">Settings</sys:String>
+    <sys:String x:Key="Str_Settings_ReadyClose">✔ Done &amp; Close [ESC]</sys:String>
+    <sys:String x:Key="Str_Settings_Sec_Region">4. Region, Language &amp; Base Currency (Latin America)</sys:String>
+    <sys:String x:Key="Str_Settings_Language">Interface language</sys:String>
+    <sys:String x:Key="Str_Settings_Currency">POS Base Currency (20 LATAM + EUR)</sys:String>
+    <sys:String x:Key="Str_Settings_FactoryReset">🔄 Reset POS to Factory Defaults</sys:String>
+
+    <sys:String x:Key="Str_Splash_Subtitle">Commercial System &amp; Point of Sale · Starting</sys:String>
+</ResourceDictionary>

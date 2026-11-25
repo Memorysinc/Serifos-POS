@@ -1,0 +1,510 @@
+<Window x:Class="FirewallControl.App.Views.AbmVentasClassicWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FirewallControl.App.Views"
+        Title="{Binding ClassicWindowTitle}"
+        Icon="pack://application:,,,/Sefiros.App;component/Assets/sefiros_pos.ico"
+        Width="1440" Height="790"
+        MinWidth="1040" MinHeight="640"
+        WindowStartupLocation="Manual"
+        Background="{DynamicResource PosWindowBgBrush}"
+        Foreground="{DynamicResource PosTextPrimaryBrush}"
+        FontFamily="Tahoma"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Sefiros.App;component/Themes/FoxPosStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            <local:IntEqualsConverter x:Key="IntEquals"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border BorderBrush="{DynamicResource PosPanelBorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="42"/>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="114"/>
+            </Grid.RowDefinitions>
+
+            <!-- ROW 0: barratitulo VFP (degradado celeste arriba -> blanco abajo, flecha curva naranja + ..:: SIN DATOS ::..) -->
+            <Border Grid.Row="0" Background="{DynamicResource PosTopBannerBrush}" BorderBrush="{DynamicResource PosTopBannerBorderBrush}" BorderThickness="0,0,0,1">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,48,0">
+                        <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_banner_arrow.ico"
+                               Width="32" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding CompanyBannerTitle}"
+                                   FontFamily="Trebuchet MS" FontSize="15" FontWeight="Bold"
+                                   Foreground="{DynamicResource PosTopBannerTitleBrush}" VerticalAlignment="Center"/>
+                        <Border x:Name="BadgeReeditando" Background="{DynamicResource DangerBgBrush}" BorderBrush="{DynamicResource DangerBorderBrush}"
+                                BorderThickness="1" CornerRadius="2" Padding="6,1" Margin="10,0,0,0" Visibility="Collapsed" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding NroVenta, StringFormat='REEDITANDO #{0}'}" Foreground="{DynamicResource DangerTextBrush}" FontWeight="Bold" FontSize="10.5"/>
+                        </Border>
+                    </StackPanel>
+
+                    <Button x:Name="BtnToolsMenu" Content="⋯" Width="28" Height="22" Margin="0,0,8,0"
+                            HorizontalAlignment="Right" VerticalAlignment="Center"
+                            Style="{StaticResource FoxClassicButtonStyle}"
+                            Click="BtnToolsMenu_Click"
+                            ToolTip="Herramientas POS (Reeditar Ctrl+X, Reimprimir Ctrl+Z, Carga IA F9, Calc C, Cuotas, Compuesto)">
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Ctrl+X · Reeditar Venta" Command="{Binding ReeditarVentaCommand}"/>
+                                <MenuItem Header="Ctrl+Z · Reimprimir Ticket" Command="{Binding ReimprimirVentaCommand}"/>
+                                <Separator/>
+                                <MenuItem Header="F9 · Carga Rápida de Productos IA" Command="{Binding OpenCargaRapidaCommand}"/>
+                                <MenuItem Header="C · Calculadora" Command="{Binding OpenCalculatorCommand}"/>
+                                <MenuItem Header="Plan de Cuotas (Crédito)" Command="{Binding OpenCuotasCommand}"/>
+                                <MenuItem Header="Receta Producto Compuesto" Command="{Binding OpenCombinarSelectedCommand}"/>
+                                <Separator/>
+                                <MenuItem Header="Comprobante: Ticket 80mm" Click="MenuComprobanteTicket_Click"/>
+                                <MenuItem Header="Comprobante: Factura Legal" Click="MenuComprobanteFactura_Click"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- ROW 1: Titulodegrade2 (ENCABEZADO FACTURA DE VENTA + Moneda) -->
+            <Border Grid.Row="1" Background="{DynamicResource PosSectionBarBrush}" BorderBrush="{DynamicResource PosSectionBarBorderBrush}" BorderThickness="1" Margin="6,3,6,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.62*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="ENCABEZADO FACTURA DE VENTA, Moneda Base: GUARANI"
+                               Foreground="{DynamicResource PosSectionBarTextBrush}" FontWeight="Bold" FontSize="11"
+                               VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <TextBlock Text="Moneda:" Foreground="{DynamicResource PosSectionBarTextBrush}" FontWeight="Bold" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <ComboBox ItemsSource="{Binding Currencies}" DisplayMemberPath="Descripcion" SelectedValuePath="IdMoneda"
+                                  SelectedValue="{Binding IdMoneda}" Width="125" Height="20"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ROW 2: 5 FILAS DE CABECERA SUFER POS DIRECTAMENTE SOBRE #F8F8F8 -->
+            <Grid Grid.Row="2" Margin="10,3,10,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.62*"/>
+                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- BLOQUE IZQUIERDO / CENTRO (Nro.Venta, Fecha, Factura, Depósito, Vendedor, Cliente, Ruc, Precios 1..7, Forma Pago) -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Fila 0: Nro. Venta | Icono | Nro. Presup | Chk Presupuesto | Cliente 1 -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Nro. Venta:" FontWeight="Bold" FontSize="11" Width="76" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBox Text="{Binding NroVenta}" Style="{StaticResource FoxReadOnlyBox}" Width="96" FontWeight="Bold" Foreground="{DynamicResource PosAccentRedLabelBrush}" TextAlignment="Right"/>
+                        <Button Style="{StaticResource FoxIconOnlyButtonStyle}" Command="{Binding OpenPresupuestosCommand}" Margin="3,0,12,0" ToolTip="Importar Presupuesto">
+                            <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_presupuesto.png" Width="15" Height="15" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Button>
+                        <TextBlock Text="Nro. Presup:" FontWeight="Bold" FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBox Text="{Binding NroPresupuestoTexto, UpdateSourceTrigger=PropertyChanged}" Width="62" KeyDown="TxtPresupuesto_KeyDown"/>
+                        <CheckBox Content="Buscar Presupuesto por Numero" IsChecked="{Binding BuscarPresupuestoPorNumero}" Margin="8,0,8,0"/>
+                        <Button Content="Cliente 1" Style="{StaticResource FoxClassicButtonStyle}" Command="{Binding ResetToCliente1Command}" Height="21" Padding="6,0" ToolTip="Restaurar Cliente Ocasional (1)"/>
+                    </StackPanel>
+
+                    <!-- Fila 1: Fecha | Nro. Factura | Timbrado -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="205,0,0,0">
+                        <TextBlock Text="Fecha:" FontWeight="Bold" FontSize="11" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <DatePicker SelectedDate="{Binding FechaVenta}" Width="104"/>
+                        <TextBlock Text="Nro. Factura:" FontWeight="Bold" FontSize="11" VerticalAlignment="Center" Margin="10,0,4,0"/>
+                        <TextBox Text="{Binding NroFactura, UpdateSourceTrigger=PropertyChanged}" Width="140" FontWeight="Bold" Foreground="{DynamicResource PosAccentRedLabelBrush}"/>
+                        <TextBox Text="{Binding Timbrado}" Style="{StaticResource FoxReadOnlyBox}" Width="94" Margin="4,0,0,0" ToolTip="Timbrado Local"/>
+                    </StackPanel>
+
+                    <!-- Fila 2: Icono panel | Deposito | Vendedor | + -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_control_panel.ico" Width="22" Height="22" Margin="0,0,3,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Deposito:" FontSize="11" Width="51" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <ComboBox ItemsSource="{Binding Deposits}" DisplayMemberPath="Descripcion" SelectedValuePath="IdDeposito" SelectedValue="{Binding IdDeposito}" Width="244"/>
+                        <TextBlock Text="Vendedor:" FontSize="11" VerticalAlignment="Center" Margin="16,0,4,0"/>
+                        <ComboBox ItemsSource="{Binding Vendedores}" DisplayMemberPath="Nombres" SelectedValuePath="IdVendedor" SelectedValue="{Binding IdVendedor}" Width="184"/>
+                        <Button Style="{StaticResource FoxIconOnlyButtonStyle}" Command="{Binding QuickCreateSellerCommand}" Margin="3,0,0,0" ToolTip="Crear Vendedor Rápido">
+                            <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_window_new.png" Width="15" Height="15" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Fila 3: Cliente | + | Lupa | Ruc | Buscar por Ruc -->
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Cliente:" FontSize="11" Width="76" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBox Text="{Binding NombreCliente, UpdateSourceTrigger=PropertyChanged}" Width="244" KeyDown="TxtRucCliente_KeyDown" ToolTip="Presione F3 para buscar cliente"/>
+                        <Button Style="{StaticResource FoxIconOnlyButtonStyle}" Command="{Binding QuickCreateCustomerCommand}" Margin="3,0,2,0" ToolTip="Crear Cliente Rápido">
+                            <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_window_new.png" Width="15" Height="15" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Button>
+                        <Button Style="{StaticResource FoxIconOnlyButtonStyle}" Command="{Binding SearchCustomerCommand}" Margin="0,0,8,0" ToolTip="Buscar Cliente [F3]">
+                            <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_lupa.png" Width="14" Height="14" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Button>
+                        <TextBlock Text="Ruc:" FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBox Text="{Binding RucCliente, UpdateSourceTrigger=PropertyChanged}" Width="118" KeyDown="TxtRucCliente_KeyDown" ToolTip="Ingrese RUC y presione Enter"/>
+                        <CheckBox Content="Buscar por Ruc" IsChecked="{Binding BuscarPorRuc}" Margin="8,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- Fila 4: Billete + Radio 1..7 + Forma de Pago: Contado / Crédito (SIN GroupName global!) -->
+                    <StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" Margin="56,0,0,0">
+                        <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_money.png" Width="18" Height="18" Margin="0,0,6,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,18,0">
+                            <RadioButton Content="1" IsChecked="{Binding ListaPrecios, Converter={StaticResource IntEquals}, ConverterParameter=1}" Margin="0,0,11,0"/>
+                            <RadioButton Content="2" IsChecked="{Binding ListaPrecios, Converter={StaticResource IntEquals}, ConverterParameter=2}" Margin="0,0,11,0"/>
+                            <RadioButton Content="3" IsChecked="{Binding ListaPrecios, Converter={StaticResource IntEquals}, ConverterParameter=3}" Margin="0,0,11,0"/>
+                            <RadioButton Content="4" IsChecked="{Binding ListaPrecios, Converter={StaticResource IntEquals}, ConverterParameter=4}" Margin="0,0,11,0"/>
+                            <RadioButton Content="5" IsChecked="{Binding ListaPrecios, Converter={StaticResource IntEquals}, ConverterParameter=5}" Margin="0,0,11,0"/>
+                            <RadioButton Content="6" IsChecked="{Binding ListaPrecios, Converter={StaticResource IntEquals}, ConverterParameter=6}" Margin="0,0,11,0"/>
+                            <RadioButton Content="7" IsChecked="{Binding ListaPrecios, Converter={StaticResource IntEquals}, ConverterParameter=7}"/>
+                        </StackPanel>
+                        <TextBlock Text="Forma de Pago :" FontWeight="Bold" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <RadioButton Content="Contado" IsChecked="{Binding FormaPago, Converter={StaticResource IntEquals}, ConverterParameter=1}" Margin="0,0,12,0"/>
+                            <RadioButton Content="Crédito" IsChecked="{Binding FormaPago, Converter={StaticResource IntEquals}, ConverterParameter=2}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- BLOQUE DERECHO (Sucursal, Imputar en Caja, Forma pago, Sup., Linea Crédito, Disponible) -->
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="98"/>
+                        <ColumnDefinition Width="118"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Fila 0: Sucursal -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Sucursal" FontWeight="Bold" FontSize="11"
+                               Foreground="{DynamicResource PosAccentRedLabelBrush}" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" ItemsSource="{Binding Branches}" DisplayMemberPath="Nombre" SelectedValuePath="IdSucursal"
+                              SelectedValue="{Binding IdSucursal}"/>
+
+                    <!-- Fila 1: Imputar en Caja | Forma pago -->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Imputar en Caja:" FontWeight="Bold" FontSize="11"
+                               Foreground="{DynamicResource PosAccentRedLabelBrush}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding IdCaja, StringFormat='CAJA {0}'}" Style="{StaticResource FoxReadOnlyBox}" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Forma pago:" FontWeight="Bold" FontSize="11"
+                               Foreground="{DynamicResource PosAccentRedLabelBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="EFECTIVO" Style="{StaticResource FoxReadOnlyBox}" FontWeight="Bold"/>
+
+                    <!-- Fila 2: Sup. -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Sup.:" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Supervisors}" DisplayMemberPath="Nombres"
+                              IsEditable="True" Text="{Binding NombreSupervisor, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <!-- Fila 3: Linea Crédito -->
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Linea Crédito:" FontSize="11"
+                               Foreground="{DynamicResource PosAccentBlueLabelBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding LineaCreditoCliente, StringFormat=N0}" Style="{StaticResource FoxReadOnlyBox}"
+                             Foreground="{DynamicResource PosAccentBlueLabelBrush}" FontWeight="Bold" TextAlignment="Right"/>
+
+                    <!-- Fila 4: Disponible -->
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Disponible:" FontSize="11"
+                               Foreground="{DynamicResource PosAccentBlueLabelBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SaldoDisponibleCliente, StringFormat=N0}" Style="{StaticResource FoxReadOnlyBox}"
+                             Foreground="{DynamicResource PosAccentBlueLabelBrush}" FontWeight="Bold" TextAlignment="Right"/>
+                </Grid>
+            </Grid>
+
+            <!-- ROW 3: Titulodegrade1 (DETALLE DE LA FACTURA DE VENTA) -->
+            <Border Grid.Row="3" Background="{DynamicResource PosSectionBarBrush}" BorderBrush="{DynamicResource PosSectionBarBorderBrush}" BorderThickness="1" Margin="10,1,10,0">
+                <Grid>
+                    <TextBlock Text="DETALLE DE LA FACTURA DE VENTA" Foreground="{DynamicResource PosSectionBarTextBrush}"
+                               FontWeight="Bold" FontSize="11" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    <TextBlock Text="{Binding ItemsCountText}" Foreground="{DynamicResource PosSectionBarTextBrush}"
+                               FontSize="10.5" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                </Grid>
+            </Border>
+
+            <!-- ROW 4: GridForm (7 COLUMNAS EXACTAS DE VFP) -->
+            <Grid Grid.Row="4" Margin="10,0,10,2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="{DynamicResource DangerSolidBgBrush}" Padding="8,3" Visibility="{Binding ModoBorradoGrilla, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="⚠ MODO BORRADO ACTIVO: Seleccione con ↑ ↓ y presione ENTER o SUPR para eliminar la fila, o ESC para volver."
+                               Foreground="White" FontWeight="Bold" FontSize="11"/>
+                </Border>
+
+                <DataGrid x:Name="GridItems" Grid.Row="1"
+                          ItemsSource="{Binding Items}"
+                          SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                          AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                          Style="{StaticResource FoxDataGridStyle}"
+                          MouseDoubleClick="GridItems_MouseDoubleClick"
+                          PreviewKeyDown="GridItems_PreviewKeyDown">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="115"/>
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad, StringFormat=N2}" Width="95">
+                            <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="HorizontalAlignment" Value="Right"/></Style></DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Descripción del Producto" Binding="{Binding Descripcion}" Width="*"/>
+                        <DataGridTextColumn Header="Pre. Unitario" Binding="{Binding PreUnitario, StringFormat=N0}" Width="120">
+                            <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="HorizontalAlignment" Value="Right"/></Style></DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Exenta" Binding="{Binding PreExenta, StringFormat=N2}" Width="120">
+                            <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="HorizontalAlignment" Value="Right"/></Style></DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="I.V.A. 5%" Binding="{Binding PreIva5, StringFormat=N2}" Width="120">
+                            <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="HorizontalAlignment" Value="Right"/></Style></DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="I.V.A. 10%" Binding="{Binding PreIva10, StringFormat=N2}" Width="125">
+                            <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="HorizontalAlignment" Value="Right"/></Style></DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+            <!-- ROW 5: 3 BOTONES F2/F4/DEL | EXENTAS/IVA5/IVA10 | SUB TOTAL / DESCUENTO / TOTAL COMPRA -->
+            <Grid Grid.Row="5" Margin="10,2,10,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="166"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="346"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 3 botones apilados exactos FOX -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Top">
+                    <Button Command="{Binding OpenSelectorCommand}" Style="{StaticResource FoxClassicButtonStyle}"
+                            Height="27" HorizontalContentAlignment="Left" Margin="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_f2_add.png" Width="15" Height="15" Margin="2,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="F2: Ingresar Producto" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding EditSelectedItemCommand}" Style="{StaticResource FoxClassicButtonStyle}"
+                            Height="27" HorizontalContentAlignment="Left" Margin="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_f4_edit.png" Width="15" Height="15" Margin="2,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="F4: Modificar Cant/Precio" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding DeleteSelectedItemCommand}" Style="{StaticResource FoxClassicButtonStyle}"
+                            Height="27" HorizontalContentAlignment="Left">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_del_remove.png" Width="15" Height="15" Margin="2,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="DEL: Eliminar Producto" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Centro: Totales por columna alineados arriba + SON letras abajo -->
+                <Grid Grid.Column="1" Margin="12,0,12,0" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <UniformGrid Grid.Row="0" Columns="3" HorizontalAlignment="Right" Width="400">
+                        <TextBox Text="{Binding TotalExenta, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}" Height="30" FontSize="15"
+                                 Foreground="{DynamicResource PosSubTotalValueBrush}" TextAlignment="Right" Margin="0,0,4,0"/>
+                        <TextBox Text="{Binding TotalIva5, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}" Height="30" FontSize="15"
+                                 Foreground="{DynamicResource PosSubTotalValueBrush}" TextAlignment="Right" Margin="0,0,4,0"/>
+                        <TextBox Text="{Binding TotalIva10, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}" Height="30" FontSize="15"
+                                 Foreground="{DynamicResource PosSubTotalValueBrush}" TextAlignment="Right"/>
+                    </UniformGrid>
+                    <TextBlock Grid.Row="1" Text="{Binding LetrasTotal, StringFormat='SON: {0}'}"
+                               Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="10.5" FontStyle="Italic"
+                               VerticalAlignment="Bottom" TextTrimming="CharacterEllipsis" Margin="4,0,0,4"/>
+                </Grid>
+
+                <!-- Derecha: Sub Total / Descuento / TOTAL COMPRA exactos Tahoma 19-20px -->
+                <Grid Grid.Column="2" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="174"/>
+                        <ColumnDefinition Width="172"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="33"/>
+                        <RowDefinition Height="33"/>
+                        <RowDefinition Height="35"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Sub Total:" Foreground="{DynamicResource PosSubTotalLabelBrush}"
+                               FontSize="19" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Subtotal, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}"
+                             Height="31" FontSize="19" Foreground="{DynamicResource PosSubTotalValueBrush}" TextAlignment="Right"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Descuento.:" Foreground="{DynamicResource PosSubTotalLabelBrush}"
+                               FontSize="19" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox x:Name="TxtDescuento" Grid.Row="1" Grid.Column="1" Text="{Binding Descuento, UpdateSourceTrigger=LostFocus, StringFormat=N2}"
+                             Height="31" FontSize="19" Foreground="{DynamicResource PosSubTotalValueBrush}" TextAlignment="Right"
+                             KeyDown="TxtDescuento_KeyDown"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="TOTAL COMPRA:" Foreground="{DynamicResource PosSubTotalLabelBrush}"
+                               FontSize="19" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TotalVenta, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}"
+                             Height="33" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource PosTotalAmountBrush}" TextAlignment="Right"/>
+                </Grid>
+            </Grid>
+
+            <!-- ROW 6: BANDA BLANCA LIQUIDACION I.V.A. CON SEPARADORES VERTICALES -->
+            <Border Grid.Row="6" Background="{DynamicResource PosIvaStripBgBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" BorderThickness="0,1,0,0" Margin="6,0,6,0" Padding="18,0">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="1"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Liquidacion I.V.A. :" Foreground="{DynamicResource PosIvaLabelBrush}" FontSize="19" VerticalAlignment="Center"/>
+                    <Rectangle Grid.Column="2" Fill="{DynamicResource PosPanelBorderBrush}" Height="30" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="(5%)" Foreground="{DynamicResource PosIvaBlueBrush}" FontSize="19" VerticalAlignment="Center" Margin="14,0,10,0"/>
+                    <TextBlock Grid.Column="4" Text="{Binding LiquidacionIva5, StringFormat=N2}" Foreground="{DynamicResource PosTotalAmountBrush}" FontSize="19" FontWeight="Bold" VerticalAlignment="Center" TextAlignment="Right" Margin="0,0,22,0"/>
+
+                    <Rectangle Grid.Column="5" Fill="{DynamicResource PosPanelBorderBrush}" Height="30" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="6" Text="(10%)" Foreground="{DynamicResource PosIvaBlueBrush}" FontSize="19" VerticalAlignment="Center" Margin="18,0,10,0"/>
+                    <TextBlock Grid.Column="7" Text="{Binding LiquidacionIva10, StringFormat=N2}" Foreground="{DynamicResource PosTotalAmountBrush}" FontSize="19" FontWeight="Bold" VerticalAlignment="Center" TextAlignment="Right" Margin="0,0,22,0"/>
+
+                    <Rectangle Grid.Column="8" Fill="{DynamicResource PosPanelBorderBrush}" Height="30" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="9" Text="Total I.V.A. :" Foreground="{DynamicResource PosIvaBlueBrush}" FontSize="19" VerticalAlignment="Center" Margin="18,0,10,0"/>
+                    <TextBlock Grid.Column="10" Text="{Binding TotalImpuesto, StringFormat=N2}" Foreground="{DynamicResource PosTotalAmountBrush}" FontSize="19" FontWeight="Bold" VerticalAlignment="Center" TextAlignment="Right" Margin="0,0,12,0"/>
+                </Grid>
+            </Border>
+
+            <!-- ROW 7: Titulodegrade3 (Obs + 4 Monedas c/Banderas PNG | 5 Botones Clásicos) -->
+            <Border Grid.Row="7" Background="{DynamicResource PosFooterBarBrush}" BorderBrush="{DynamicResource PosFooterBorderBrush}" BorderThickness="1" Margin="6,0,6,6" Padding="8,5,10,4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.22*"/>
+                        <ColumnDefinition Width="14"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Izquierda: Obs + 4 Monedas con banderas PNG reales -->
+                    <StackPanel Grid.Column="0">
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Obs.:" Foreground="{DynamicResource PosFooterTextBrush}" FontSize="11" VerticalAlignment="Top" Margin="0,1,0,0"/>
+                            <TextBox Grid.Column="1" Text="{Binding Observacion, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Top" Padding="4,2"/>
+                        </Grid>
+
+                        <UniformGrid Columns="4">
+                            <!-- Real -->
+                            <Grid Margin="0,0,8,0">
+                                <Grid.RowDefinitions><RowDefinition Height="14"/><RowDefinition Height="26"/></Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="{Binding CotReal, StringFormat=N2}" Foreground="{DynamicResource PosFooterTextBrush}" FontSize="9.5" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                <DockPanel Grid.Row="1">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_flag_br.png" Width="28" Height="20" DockPanel.Dock="Left" Margin="0,0,3,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBox Text="{Binding MonedaReal, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}" Background="{DynamicResource PosInputBgBrush}"
+                                             FontSize="14" FontWeight="Normal" Height="25" TextAlignment="Right"/>
+                                </DockPanel>
+                            </Grid>
+                            <!-- Dólar -->
+                            <Grid Margin="0,0,8,0">
+                                <Grid.RowDefinitions><RowDefinition Height="14"/><RowDefinition Height="26"/></Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="{Binding CotDolar, StringFormat=N2}" Foreground="{DynamicResource PosFooterTextBrush}" FontSize="9.5" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                <DockPanel Grid.Row="1">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_flag_us.png" Width="28" Height="20" DockPanel.Dock="Left" Margin="0,0,3,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBox Text="{Binding MonedaDolar, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}" Background="{DynamicResource PosInputBgBrush}"
+                                             FontSize="14" FontWeight="Normal" Height="25" TextAlignment="Right"/>
+                                </DockPanel>
+                            </Grid>
+                            <!-- Euro -->
+                            <Grid Margin="0,0,8,0">
+                                <Grid.RowDefinitions><RowDefinition Height="14"/><RowDefinition Height="26"/></Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="{Binding CotEuro, StringFormat=N2}" Foreground="{DynamicResource PosFooterTextBrush}" FontSize="9.5" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                <DockPanel Grid.Row="1">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_flag_eu.png" Width="28" Height="20" DockPanel.Dock="Left" Margin="0,0,3,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBox Text="{Binding MonedaEuro, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}" Background="{DynamicResource PosInputBgBrush}"
+                                             FontSize="14" FontWeight="Normal" Height="25" TextAlignment="Right"/>
+                                </DockPanel>
+                            </Grid>
+                            <!-- Peso -->
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="14"/><RowDefinition Height="26"/></Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="{Binding CotPeso, StringFormat=N2}" Foreground="{DynamicResource PosFooterTextBrush}" FontSize="9.5" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                <DockPanel Grid.Row="1">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_flag_ar.png" Width="28" Height="20" DockPanel.Dock="Left" Margin="0,0,3,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBox Text="{Binding MonedaPeso, StringFormat=N2}" Style="{StaticResource FoxReadOnlyBox}" Background="{DynamicResource PosInputBgBrush}"
+                                             FontSize="14" FontWeight="Normal" Height="25" TextAlignment="Right"/>
+                                </DockPanel>
+                            </Grid>
+                        </UniformGrid>
+                    </StackPanel>
+
+                    <!-- Derecha: 5 Botones exactos FOX + Estado abajo -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,8">
+                            <Button Command="{Binding OpenFacturaLegalCommand}" Style="{StaticResource FoxClassicButtonStyle}" Height="56" Width="130" Margin="0,0,12,0">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_factura_legal.png" Width="18" Height="18" Margin="0,0,6,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock Text="Emitir Factura Legal" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Command="{Binding OpenAjusteStockCommand}" Style="{StaticResource FoxClassicButtonStyle}" Height="56" Width="106" Margin="0,0,4,0">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_ajuste_stock.png" Width="24" Height="24" Margin="0,0,0,2" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock Text="Ajuste Stock" FontSize="10.5"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Command="{Binding SaveOnlyCommand}" Style="{StaticResource FoxClassicButtonStyle}" Height="56" Width="64" Margin="0,0,2,0"
+                                    ToolTip="Grabar venta sin imprimir [X / Ctrl+S]">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_guardar.ico" Width="22" Height="22" Margin="0,0,0,2" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock Text="F9 = Grab" FontSize="10" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Command="{Binding SaveAndPrintCommand}" Style="{StaticResource FoxClassicButtonStyle}" Height="56" Width="64" Margin="0,0,6,0"
+                                    ToolTip="Grabar e Imprimir Ticket / Factura [Z / Ctrl+P]">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_guardar.ico" Width="22" Height="22" Margin="0,0,0,2" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock Text="F9 = Im G" FontSize="10" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Click="BtnSalir_Click" Style="{StaticResource FoxClassicButtonStyle}" Height="56" Width="104" ToolTip="Cerrar [ESC]">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image Source="pack://application:,,,/Sefiros.App;component/Assets/FoxIcons/fox_salir_arrow.ico" Width="28" Height="28" Margin="0,0,0,2" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock Text="Salir" FontSize="11"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource PosFooterTextBrush}" FontSize="10.5" FontWeight="Bold"
+                                   HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" MaxWidth="490"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

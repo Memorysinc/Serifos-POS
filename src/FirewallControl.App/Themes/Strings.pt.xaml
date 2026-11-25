@@ -1,0 +1,66 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="Str_Nav_Clientes">Clientes</sys:String>
+    <sys:String x:Key="Str_Nav_Proveedor">Fornecedor</sys:String>
+    <sys:String x:Key="Str_Nav_Vendedor">Vendedor</sys:String>
+    <sys:String x:Key="Str_Nav_Pagos">Pagamentos</sys:String>
+    <sys:String x:Key="Str_Nav_Cobros">Recebimentos</sys:String>
+    <sys:String x:Key="Str_Nav_MovCaja">Mov. Caixa</sys:String>
+    <sys:String x:Key="Str_Nav_Productos">Produtos</sys:String>
+
+    <sys:String x:Key="Str_Btn_CambiarUsuario">Trocar Usuário</sys:String>
+    <sys:String x:Key="Str_Btn_Tema">🎨 Tema</sys:String>
+    <sys:String x:Key="Str_Btn_Ajustes">⚙ Ajustes [F4]</sys:String>
+    <sys:String x:Key="Str_Btn_Actualizar">⟳ Atualizar</sys:String>
+
+    <sys:String x:Key="Str_Kpi_CatalogoActivo">CATÁLOGO ATIVO</sys:String>
+    <sys:String x:Key="Str_Kpi_FlujoCajaHoy">FLUXO DE CAIXA HOJE</sys:String>
+    <sys:String x:Key="Str_Kpi_VentasHoy">VENDAS DE HOJE</sys:String>
+    <sys:String x:Key="Str_Kpi_AgendaHoy">AGENDA DE HOJE</sys:String>
+
+    <sys:String x:Key="Str_Sec_OperacionDiaria">Operação Diária e Atalhos</sys:String>
+    <sys:String x:Key="Str_Sec_AtajosRapidos">Atalhos rápidos · Clique ou teclado</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaVenta">Nova Venda</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaVentaSub">Faturamento e caixa (Caixas 1–5)</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaCompra">Nova Compra</sys:String>
+    <sys:String x:Key="Str_Tile_NuevaCompraSub">Registro de compras</sys:String>
+    <sys:String x:Key="Str_Tile_Pedidos">Pedidos de Compra</sys:String>
+    <sys:String x:Key="Str_Tile_PedidosSub">Solicitações a fornecedores</sys:String>
+    <sys:String x:Key="Str_Tile_Presupuestos">Orçamentos</sys:String>
+    <sys:String x:Key="Str_Tile_PresupuestosSub">Cotações rápidas</sys:String>
+    <sys:String x:Key="Str_Tile_InformesLucro">Relatórios e Lucro</sys:String>
+    <sys:String x:Key="Str_Tile_InformesLucroSub">Auditoria e rentabilidade</sys:String>
+    <sys:String x:Key="Str_Tile_AgendaDia">Agenda do Dia</sys:String>
+    <sys:String x:Key="Str_Tile_AgendaDiaSub">Sem alertas pendentes hoje</sys:String>
+
+    <sys:String x:Key="Str_Sec_ActividadReciente">Atividade comercial recente</sys:String>
+    <sys:String x:Key="Str_Btn_VerInforme">Ver Relatório →</sys:String>
+    <sys:String x:Key="Str_Tab_UltimasVentas">🕒  Últimas Vendas</sys:String>
+    <sys:String x:Key="Str_Tab_TopVendidos">🔥  Mais Vendidos</sys:String>
+
+    <sys:String x:Key="Str_Sec_CotizacionesDia">Cotações do Dia</sys:String>
+    <sys:String x:Key="Str_Btn_Refrescar">Atualizar</sys:String>
+    <sys:String x:Key="Str_Col_Moneda">MOEDA</sys:String>
+    <sys:String x:Key="Str_Col_Compra">COMPRA</sys:String>
+    <sys:String x:Key="Str_Col_Venta">VENDA</sys:String>
+
+    <sys:String x:Key="Str_Brand_Tagline">Ponto de Venda e Gestão ERP</sys:String>
+    <sys:String x:Key="Str_Badge_LicenciaActiva">LICENÇA ATIVA</sys:String>
+    <sys:String x:Key="Str_Btn_Minimizar">Minimizar Janela</sys:String>
+    <sys:String x:Key="Str_Btn_AcercaDe">Sobre Sefiros POS</sys:String>
+
+    <sys:String x:Key="Str_Factory_OfflineNotice">Modo de fábrica pronto · Configure seu servidor MySQL em Ajustes [F4] ou 🌐 MySQL.</sys:String>
+    <sys:String x:Key="Str_Factory_ModeBadge">● MODO FÁBRICA</sys:String>
+
+    <sys:String x:Key="Str_Settings_Title">Ajustes</sys:String>
+    <sys:String x:Key="Str_Settings_Close">Fechar</sys:String>
+    <sys:String x:Key="Str_Settings_Back">Ajustes</sys:String>
+    <sys:String x:Key="Str_Settings_ReadyClose">✔ Concluir e Fechar [ESC]</sys:String>
+    <sys:String x:Key="Str_Settings_Sec_Region">4. Região, idioma e moeda base (América Latina)</sys:String>
+    <sys:String x:Key="Str_Settings_Language">Idioma da interface</sys:String>
+    <sys:String x:Key="Str_Settings_Currency">Moeda base do PDV (20 moedas LATAM + EUR)</sys:String>
+    <sys:String x:Key="Str_Settings_FactoryReset">🔄 Restaurar PDV para padrões de fábrica</sys:String>
+
+    <sys:String x:Key="Str_Splash_Subtitle">Sistema Comercial e Ponto de Venda · Iniciando</sys:String>
+</ResourceDictionary>

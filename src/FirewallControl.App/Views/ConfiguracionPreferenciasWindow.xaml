@@ -1,0 +1,1576 @@
+<Window x:Class="FirewallControl.App.Views.ConfiguracionPreferenciasWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ajustes y Configuración del Sistema"
+        Icon="pack://application:,,,/Sefiros.App;component/Assets/sefiros_pos.ico"
+        Width="1040" Height="760"
+        MinWidth="880" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource ScreenBgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- TOP HEADER BAR (Matches Gissel Modas Settings Header) -->
+        <Border Grid.Row="0" Background="{DynamicResource CardBgBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,0,0,1" Padding="20,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="180"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="BtnHeaderBack" Grid.Column="0" HorizontalAlignment="Left"
+                        Style="{StaticResource SecondaryButtonStyle}" Padding="14,7" Click="BtnHeaderBack_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="‹" FontSize="18" FontWeight="SemiBold" Margin="0,-2,6,0" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtHeaderBackLabel" Text="Cerrar" FontSize="12.5" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <TextBlock x:Name="TxtHeaderTitle" Grid.Column="1" Text="Ajustes"
+                           Style="{StaticResource PageTitleStyle}" FontSize="22"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                <Button Grid.Column="2" HorizontalAlignment="Right" Content="👤 Cambiar Usuario"
+                        Style="{StaticResource SecondaryButtonStyle}" FontSize="12"
+                        Padding="12,7" Click="BtnSwitchUserQuick_Click" ToolTip="Iniciar sesión con otro usuario o rango"/>
+            </Grid>
+        </Border>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 0: HUB PRINCIPAL DE AJUSTES (6 CATEGORÍAS EN ORDEN LÓGICO)  -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewHub" Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="800" HorizontalAlignment="Stretch">
+
+                <!-- SESIÓN Y PERFIL ACTIVO -->
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="20,16" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Sesión activa" Style="{StaticResource EyebrowLabelStyle}"/>
+                            <TextBlock x:Name="TxtHubAccountSubtitle" Text="ADMINISTRA · ADMINISTRADOR DEL SISTEMA (Rango: ADMIN)"
+                                       FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Style="{StaticResource BadgePillStyle}"
+                                Background="{DynamicResource SuccessBgBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}"
+                                Padding="12,5" VerticalAlignment="Center" Margin="10,0,10,0">
+                            <TextBlock x:Name="TxtHubAccountBadge" Text="● Cuenta activa · ADMIN"
+                                       Foreground="{DynamicResource SuccessTextBrush}" FontSize="11.5" FontWeight="SemiBold"/>
+                        </Border>
+                        <Button Grid.Column="2" Content="Mi perfil ›" Style="{StaticResource SecondaryButtonStyle}"
+                                Padding="12,6" VerticalAlignment="Center" Click="NavMiPerfil_Click"/>
+                    </Grid>
+                </Border>
+
+                <!-- 1. EMPRESA Y CONFIGURACIÓN COMERCIAL -->
+                <TextBlock Text="1. Empresa y operación comercial" Style="{StaticResource SectionTitleStyle}" FontSize="17" Margin="4,0,0,8"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="8,6" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavEmpresa_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🏢" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Datos de empresa, timbrado y utilidades" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtHubEmpresaSummary" Text="Nombre comercial, RUC, timbrado vigente, lista activa y 7 niveles de utilidad" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. APARIENCIA Y DISEÑO DEL POS -->
+                <TextBlock Text="2. Apariencia y diseño del POS" Style="{StaticResource SectionTitleStyle}" FontSize="17" Margin="4,0,0,8"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="8,6" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavApariencia_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="✨" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Diseño, tema Sefiros y paleta del POS" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtHubAparienciaSummary" Text="Tema visual · Diseño Renovado / Clásico FOX · Paleta Moderna / Clásica FOX" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+
+                        <Separator Margin="12,2"/>
+
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="BtnOpenColorAtelier_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🎨" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Tema visual del sistema (8 temas · incluye Sefiros)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Selector rápido de tema; Tema Sefiros recolorea también la versión Clásica FOX" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,4,0">
+                                    <Border x:Name="SwatchCurrentTheme" Width="22" Height="22" CornerRadius="6"
+                                            Background="{DynamicResource ButtonPrimaryBgBrush}"
+                                            BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                            VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock x:Name="TxtCurrentThemeName" Text="Neutro Carbón"
+                                               FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="14,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🌙" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Tema oscuro" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtTemaOscuroSub" Text="Desactivado" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkTemaOscuro" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          VerticalAlignment="Center" Margin="8,0,4,0"
+                                          Checked="OnThemeDarkModeChanged" Unchecked="OnThemeDarkModeChanged"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. PUNTO DE VENTA, STOCK Y ATAJOS -->
+                <TextBlock Text="3. Punto de venta, stock y atajos" Style="{StaticResource SectionTitleStyle}" FontSize="17" Margin="4,0,0,8"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="8,6" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavPreferencias_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🎛" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Control de stock, caja y límites de venta" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtHubPrefSummary" Text="Reglas de inventario, movimiento rápido [F10], Modal 1 y límites de cantidad/precio" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+
+                        <Separator Margin="12,2"/>
+
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavAtajos_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="⌨" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Atajos de teclado del POS y ventanas" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Asigna teclas rápidas para ABMVENTAS, selector de ítems, Genes y Menú Principal" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. IMPRESIÓN Y PERIFÉRICOS -->
+                <TextBlock Text="4. Impresión y periféricos" Style="{StaticResource SectionTitleStyle}" FontSize="17" Margin="4,0,0,8"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="8,6" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavImpresion_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🖨" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Impresión de tickets, facturas y cajón" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtHubPrintSummary" Text="Impresora térmica 80mm, 1 sola nota compacta, modo RAW y corte automático" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. EQUIPO, RED LAN Y SEGURIDAD -->
+                <TextBlock Text="5. Equipo, red LAN y seguridad" Style="{StaticResource SectionTitleStyle}" FontSize="17" Margin="4,0,0,8"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="8,6" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavMulticonexion_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🌐" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Multiconexión entre PCs y servidor MySQL" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtHubNetworkSummary" Text="Sincronización en tiempo real entre dispositivos de la red LAN (Servidor / Cliente)" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+
+                        <Separator Margin="12,2"/>
+
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavUsuarios_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🔐" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Usuarios, contraseñas y rangos de acceso" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Alta/baja de cajeros, claves personales y permisos de módulos (Multiusuario)" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+
+                        <Separator Margin="12,2"/>
+
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavMiPerfil_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="👤" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Mi perfil y contraseña personal" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Datos de tu cuenta activa, terminal asignado y cambio de clave personal" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!-- 6. SISTEMA Y COPIAS DE SEGURIDAD -->
+                <TextBlock Text="6. Sistema y copias de seguridad" Style="{StaticResource SectionTitleStyle}" FontSize="17" Margin="4,0,0,8"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="8,6" Margin="0,0,0,16">
+                    <StackPanel>
+                        <Button Style="{StaticResource HubRowButtonStyle}" Click="NavSistemaRespaldo_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🛡" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Sistema, licencia y copias de seguridad" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Licencia perpetua, motor .NET 10, exportar y restaurar respaldo (.json)" Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="›" FontSize="20" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 1: MI PERFIL                                                -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewMiPerfil" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="760">
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="54" Height="54" CornerRadius="14" Background="{DynamicResource SurfaceAccentBrush}"
+                                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Margin="0,0,16,0">
+                            <TextBlock Text="👤" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtPerfilHeaderName" Text="ADMINISTRA" Style="{StaticResource SectionTitleStyle}" FontSize="19"/>
+                            <Border Style="{StaticResource BadgePillStyle}" Background="{DynamicResource SurfaceAltBrush}"
+                                    HorizontalAlignment="Left" Margin="0,4,0,0" Padding="10,2">
+                                <TextBlock x:Name="TxtPerfilHeaderRoleBadge" Text="ADMIN" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            </Border>
+                        </StackPanel>
+                        <Button Grid.Column="2" Content="🔄 Cambiar de Usuario" Style="{StaticResource PrimaryButtonStyle}"
+                                HorizontalAlignment="Right" VerticalAlignment="Center" Padding="14,8" Click="BtnSwitchUserQuick_Click"/>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18" Margin="0,0,0,16">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,14">
+                            <TextBlock Text="Datos de la cuenta" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Center"/>
+                            <Button Content="Administrar usuarios" Style="{StaticResource SecondaryButtonStyle}" FontSize="11.5"
+                                    Padding="12,5" HorizontalAlignment="Right" Click="NavUsuarios_Click"/>
+                        </Grid>
+
+                        <Border Style="{StaticResource SoftPanelStyle}" Padding="14,10" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,12,0">
+                                    <TextBlock Text="🪪" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Código de usuario (Login)" Style="{StaticResource FieldLabelStyle}" Margin="0"/>
+                                    <TextBlock x:Name="TxtPerfilUsuario" Text="ADMINISTRA" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource SoftPanelStyle}" Padding="14,10" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,12,0">
+                                    <TextBlock Text="📝" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Nombre completo" Style="{StaticResource FieldLabelStyle}" Margin="0"/>
+                                    <TextBlock x:Name="TxtPerfilNombre" Text="ADMINISTRADOR DEL SISTEMA" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource SoftPanelStyle}" Padding="14,10" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,12,0">
+                                    <TextBlock Text="🖥" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Sucursal, Caja y Depósito asignados" Style="{StaticResource FieldLabelStyle}" Margin="0"/>
+                                    <TextBlock x:Name="TxtPerfilTerminalInfo" Text="Sucursal #1 · Caja #1 · Depósito #1" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource SoftPanelStyle}" Padding="14,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,12,0">
+                                    <TextBlock Text="🛡" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Rango y permisos habilitados" Style="{StaticResource FieldLabelStyle}" Margin="0"/>
+                                    <TextBlock x:Name="TxtPerfilRolPermisos" Text="ADMIN (Acceso Total a Ventas, Compras, Productos, Caja, Informes y Configuración)"
+                                               FontSize="13.5" FontWeight="SemiBold" Foreground="{DynamicResource SuccessTextBrush}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Cambiar mi contraseña -->
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18">
+                    <StackPanel>
+                        <TextBlock Text="Seguridad de la cuenta" Style="{StaticResource SectionTitleStyle}"/>
+                        <TextBlock Text="Cambiar tu contraseña personal en MySQL (codificada con hash FoxPro SYS(2007))"
+                                   Style="{StaticResource SubtitleTextStyle}" Margin="0,3,0,14"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Nueva contraseña" Style="{StaticResource FieldLabelStyle}"/>
+                                <PasswordBox x:Name="PwdPerfilNueva"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Confirmar contraseña" Style="{StaticResource FieldLabelStyle}"/>
+                                <PasswordBox x:Name="PwdPerfilConfirmar"/>
+                            </StackPanel>
+                            <Button Grid.Column="4" Content="Actualizar Clave" Style="{StaticResource PrimaryButtonStyle}"
+                                    Padding="16,9" Margin="0,19,0,0" Click="BtnUpdateMyPassword_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 9: APARIENCIA, TEMA SEFIROS Y DISEÑO DEL POS                -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewApariencia" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="820">
+                <TextBlock Text="1. Tema visual del sistema (8 temas · incluye Tema Sefiros)" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Controla el esquema cromático global de las ventanas. El Tema Sefiros usa la paleta oficial de Sefiros POS y se aplica también a la versión Clásica FOX."
+                           Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="16,14" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="SwatchAparienciaTheme" Width="36" Height="36" CornerRadius="9"
+                                    Background="{DynamicResource ButtonPrimaryBgBrush}"
+                                    BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                    VerticalAlignment="Center" Margin="0,0,14,0"/>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
+                                <TextBlock x:Name="TxtAparienciaThemeName" Text="Neutro Carbón" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                <TextBlock x:Name="TxtAparienciaThemeDesc" Text="Paleta estándar del sistema" Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Button Grid.Column="2" Content="🎨 Cambiar tema" Style="{StaticResource SecondaryButtonStyle}"
+                                    Padding="13,8" Margin="0,0,8,0" VerticalAlignment="Center" Click="BtnOpenColorAtelier_Click"/>
+                            <Button x:Name="BtnActivateSefirosTheme" Grid.Column="3" Content="✨ Activar Tema Sefiros"
+                                    Style="{StaticResource PrimaryButtonStyle}" Padding="14,8" VerticalAlignment="Center"
+                                    Click="BtnActivateSefirosTheme_Click"/>
+                        </Grid>
+
+                        <Separator Margin="4,2,4,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                <TextBlock Text="🌙" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="Tema oscuro en todo el sistema" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                <TextBlock x:Name="TxtTemaOscuroAparienciaSub" Text="Desactivado" Style="{StaticResource SubtitleTextStyle}"/>
+                            </StackPanel>
+                            <CheckBox x:Name="ChkTemaOscuroApariencia" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                      VerticalAlignment="Center" Checked="OnThemeDarkModeChanged" Unchecked="OnThemeDarkModeChanged"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="2. Diseño del Punto de Venta (ABMVENTAS e ITEMSFACTURAVENTAS)" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Elige cómo se organizan las 5 cajas y el selector de ítems. El cambio es inmediato conservando los productos cargados."
+                           Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="16,14" Margin="0,0,0,18">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="14"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource SoftPanelStyle}" Padding="14,12">
+                            <RadioButton x:Name="RbEstiloRenovado" GroupName="PosStyleGroup" Checked="OnPosStyleChanged">
+                                <StackPanel Margin="6,-2,0,0">
+                                    <TextBlock Text="✨ Renovado (C# Atelier)" FontSize="14.5" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Ventanas en cascada visibles una detrás de otra, cuadro de Stock Actual en vivo, cabecera compacta y selector ampliado."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource SoftPanelStyle}" Padding="14,12">
+                            <RadioButton x:Name="RbEstiloClasico" GroupName="PosStyleGroup" Checked="OnPosStyleChanged">
+                                <StackPanel Margin="6,-2,0,0">
+                                    <TextBlock Text="🖥 Clásico (Visual FoxPro / Sufer POS)" FontSize="14.5" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Ventanas superpuestas centradas (solo la caja activa delante), distribución Sufer POS, píldoras P1..P7 y multimoneda."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <TextBlock Text="3. Paleta de colores del POS (Moderna vs Clásica FOX)" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Preferencia independiente del diseño elegido (Clásico o Renovado) para los 7 temas Atelier tradicionales."
+                           Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="4,0,0,10"/>
+
+                <Border x:Name="BannerSefirosOverrideInfo" Visibility="Collapsed"
+                        Background="{DynamicResource InfoBgBrush}" BorderBrush="{DynamicResource InfoBorderBrush}"
+                        BorderThickness="1" CornerRadius="10" Padding="12,9" Margin="0,0,0,12">
+                    <TextBlock Text="✨ Tema Sefiros activo: la paleta oficial de Sefiros POS se aplica actualmente a todo el sistema, incluida la versión Clásica FOX de ABMVENTAS e ITEMSFACTURAVENTAS. Tu selección aquí abajo se conserva para los demás temas."
+                               Foreground="{DynamicResource InfoTextBrush}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                </Border>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="16,14" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="14"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource SoftPanelStyle}" Padding="14,12">
+                            <RadioButton x:Name="RbPaletaModerna" GroupName="ColorPaletteGroup" Checked="OnColorPaletteChanged">
+                                <StackPanel Margin="6,-2,0,0">
+                                    <TextBlock Text="🎨 Moderna (C# Atelier)" FontSize="14.5" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Utiliza los colores actuales modernos de C# (paletas Atelier, claro cálido o modo oscuro)."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource SoftPanelStyle}" Padding="14,12">
+                            <RadioButton x:Name="RbPaletaClasicaFox" GroupName="ColorPaletteGroup" Checked="OnColorPaletteChanged">
+                                <StackPanel Margin="6,-2,0,0">
+                                    <TextBlock Text="🟦 Clásica FOX (Visual FoxPro / Sufer POS)" FontSize="14.5" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Reproduce los tonos originales de FOX solo en ABMVENTAS e ITEMSFACTURAVENTAS cuando no está activo el Tema Sefiros."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <TextBlock Text="{DynamicResource Str_Settings_Sec_Region}" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Elige el idioma de la interfaz (ES / PT / EN) y la moneda latinoamericana base del punto de venta."
+                           Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="4,0,0,10"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="16,14" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="1.45*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{DynamicResource Str_Settings_Language}" Style="{StaticResource FieldLabelStyle}"/>
+                            <ComboBox x:Name="CmbIdioma"
+                                      DisplayMemberPath="DisplayLabel"
+                                      SelectedValuePath="Code"
+                                      Margin="0,4,0,0"
+                                      SelectionChanged="OnLanguageChanged"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="{DynamicResource Str_Settings_Currency}" Style="{StaticResource FieldLabelStyle}"/>
+                            <ComboBox x:Name="CmbMonedaBase"
+                                      DisplayMemberPath="DisplayLabel"
+                                      SelectedValuePath="IsoCode"
+                                      Margin="0,4,0,0"
+                                      SelectionChanged="OnBaseCurrencyChanged"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 2: OPERACIÓN POS, CONTROL DE STOCK Y LÍMITES DE VENTA       -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewPreferencias" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="820">
+                <TextBlock Text="1. Control de inventario y stock" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Define cómo se controla y descuenta el stock durante la facturación. Los cambios se guardan al instante."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="10,6" Margin="0,0,0,18">
+                    <StackPanel>
+                        <!-- 1. No controlar stock en todos los items -->
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="📦" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="No controlar stock en todos los ítems (Modo Libre)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="POR DEFECTO DESACTIVADO. Si lo activas, permite vender cualquier producto aunque tenga stock 0 o negativo."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefNoControlarStockGlobal" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <!-- 2. Descontar stock al vender -->
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="📉" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Descontar stock en el depósito al vender" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Actualiza las existencias reales en productos_detalle tras cada venta confirmada."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefDescontarStock" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <!-- 3. Congelar inventario en productos sin control de stock -->
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🧊" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Congelar inventario cuando no se controla stock (evitar negativos)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Los productos sin control de stock (incluidos los cargados desde F9) congelan su existencia sin descontar hacia valores negativos."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefCongelarStockSinControl" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="2. Flujo de caja y selector de ítems (ITEMSFACTURAVENTAS)" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Comportamiento de escaneo, bloqueo modal, foco automático y botonera Genes."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="10,6" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🔒" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Selector de Ítems en Modo Modal 1 (bloquea ventanas de atrás)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="POR DEFECTO DESACTIVADO. Cuando está activo, impide hacer clic en ABMVENTAS o en el menú principal mientras ITEMSFACTURAVENTAS está abierto."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefItemFacturaModal" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="⚡" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Iniciar con Movimiento Rápido activado [F10]" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Al abrir el selector de ítems, el lector de códigos agrega el producto directamente con Enter o escaneo."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefMovRapido" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🔁" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Reiniciar campo al equivocarse y devolver el foco a Código" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Si el producto no existe, falta stock o el peso es inválido, limpia y enfoca el buscador automáticamente."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefReiniciarAlEquivocarse" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🔔" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Emitir sonido de alerta en errores de escaneo o stock" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Avisa al cajero mediante una señal sonora cuando un código no es reconocido o supera el stock."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefSonidoAlerta" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🥕" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Sincronizar precios Genes (Verdulería/Carnicería/Panadería) al abrir" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Actualiza automáticamente los botones de pesables desde MySQL al ingresar a la pantalla Genes."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefSyncGenes" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="3. Validaciones y límites de precio y cantidad" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Restricciones editables de costo mínimo, rango de precio unitario y cantidad máxima por línea."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="10,6" Margin="0,0,0,16">
+                    <StackPanel>
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="💲" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Permitir ventas por debajo del costo medio" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Si está desactivado, bloquea precios menores al costo de compra para evitar pérdidas."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefPermitirBajoCosto" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🛡" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Validar precio mínimo y máximo en Ítem Factura" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Desactívalo si deseas permitir cualquier precio positivo (por ejemplo 3 Gs.) sin restricciones de rango."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrefValidarLimitesPrecio" Grid.Column="2" Style="{StaticResource PillToggleStyle}"
+                                          Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="🔢" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Límite máximo de cantidad por ítem (0 = sin límite)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Evita cargar un código de barras completo como cantidad. Coloque 0 para desactivar el tope."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <TextBox x:Name="TxtPrefLimiteCantidad" Grid.Column="2" Text="120" FontWeight="Bold" FontSize="14"
+                                         HorizontalContentAlignment="Center" VerticalAlignment="Center" LostFocus="TxtPrefLimiteCantidad_LostFocus"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="⬇" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Precio unitario mínimo permitido en Ítem Factura (Gs.)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Valor por defecto: 99. Cámbialo a 0 (sin mínimo) o a 1 para poder ingresar precios bajos como 3."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <TextBox x:Name="TxtPrefPrecioMinimo" Grid.Column="2" Text="99" FontWeight="Bold" FontSize="14"
+                                         HorizontalContentAlignment="Center" VerticalAlignment="Center" LostFocus="TxtPrefLimiteCantidad_LostFocus"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBoxStyle}" Margin="0,0,14,0">
+                                    <TextBlock Text="⬆" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Precio unitario máximo permitido en Ítem Factura (Gs.)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Valor por defecto: 1000000. Coloque 0 si no desea tope máximo de precio por línea."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <TextBox x:Name="TxtPrefPrecioMaximo" Grid.Column="2" Text="1000000" FontWeight="Bold" FontSize="14"
+                                         HorizontalContentAlignment="Center" VerticalAlignment="Center" LostFocus="TxtPrefLimiteCantidad_LostFocus"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 3: ASIGNAR TECLAS Y ATAJOS DE VENTANAS                      -->
+        <!-- ================================================================ -->
+        <Grid x:Name="ViewAtajos" Grid.Row="1" Visibility="Collapsed" Margin="24,18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Style="{StaticResource AtelierCardStyle}" Padding="16,12" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="1. Seleccione la Ventana del Sistema que desea personalizar:"
+                               Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,10"/>
+                    <WrapPanel>
+                        <RadioButton x:Name="RbWinItemsFactura" Content="1. Selector (ITEMSFACTURAVENTAS)" IsChecked="True"
+                                     FontWeight="SemiBold" Margin="0,0,18,0" Checked="RbWindowFilter_Checked"/>
+                        <RadioButton x:Name="RbWinAbmVentas" Content="2. Punto de Venta (ABM_VENTAS)"
+                                     FontWeight="SemiBold" Margin="0,0,18,0" Checked="RbWindowFilter_Checked"/>
+                        <RadioButton x:Name="RbWinGenes" Content="3. Botonera Departamentos (GENES)"
+                                     FontWeight="SemiBold" Margin="0,0,18,0" Checked="RbWindowFilter_Checked"/>
+                        <RadioButton x:Name="RbWinFondo" Content="4. Menú Principal (_FONDO)"
+                                     FontWeight="SemiBold" Checked="RbWindowFilter_Checked"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1" Style="{StaticResource SoftPanelStyle}" Padding="14,10" Margin="0,0,0,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="LblCaptureStatus" Grid.Column="0"
+                               Text="Haga doble clic en cualquier fila o presione 'Capturar Nueva Tecla' para reasignar su función."
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                    <Button x:Name="BtnStartCapture" Grid.Column="1" Content="⌨ Capturar Nueva Tecla"
+                            Style="{StaticResource PrimaryButtonStyle}" Padding="14,7" Margin="8,0,0,0" Click="BtnStartCapture_Click"/>
+                    <Button Grid.Column="2" Content="Restaurar Fila"
+                            Style="{StaticResource SecondaryButtonStyle}" Padding="12,7" Margin="8,0,0,0" Click="BtnResetSingleKey_Click"/>
+                    <Button Grid.Column="3" Content="Restaurar Todas"
+                            Style="{StaticResource SoftDangerButtonStyle}" Padding="12,7" Margin="8,0,0,0" Click="BtnResetAllKeys_Click"/>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2" Style="{StaticResource AtelierCardStyle}" Padding="6">
+                <DataGrid x:Name="GridShortcuts"
+                          AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                          BorderThickness="0"
+                          MouseDoubleClick="GridShortcuts_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Función / Acción de Caja" Binding="{Binding ActionName}" Width="290"/>
+                        <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="*"/>
+                        <DataGridTextColumn Header="Original" Binding="{Binding DefaultKey}" Width="115"/>
+                        <DataGridTextColumn Header="Tecla Asignada" Binding="{Binding CurrentKey}" Width="140" FontWeight="Bold"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 4: IMPRESIÓN Y PERIFÉRICOS                                  -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewImpresion" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="820">
+                <TextBlock Text="1. Impresoras asignadas y formato" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Configura tu impresora POS (80mm / 58mm) para emitir 1 sola nota de venta compacta, con avance mínimo y corte automático."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="20,18" Margin="0,0,0,18">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="14"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Text="Impresora de tickets / nota interna" Style="{StaticResource FieldLabelStyle}"/>
+                            <ComboBox x:Name="CmbPrinterTicket" IsEditable="True"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Text="Impresora de factura legal" Style="{StaticResource FieldLabelStyle}"/>
+                            <ComboBox x:Name="CmbPrinterLegal" IsEditable="True"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.Column="0">
+                            <TextBlock Text="Cantidad de copias por venta (Por defecto: 1)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtPrintCopias" Text="1" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock Text="1 = Emite una única nota de venta sin duplicados innecesarios."
+                                       Style="{StaticResource SubtitleTextStyle}" FontSize="11" Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.Column="2">
+                            <TextBlock Text="Líneas de avance antes del corte (0 a 8)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtPrintLineasAvance" Text="2" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock Text="Valor 2 evita desperdiciar papel dejando un margen mínimo tras el total."
+                                       Style="{StaticResource SubtitleTextStyle}" FontSize="11" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <TextBlock Text="2. Comportamiento ESC/POS y periféricos" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Opciones de impresión continua directa, guillotina automática y apertura de gaveta."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="10,6" Margin="0,0,0,16">
+                    <StackPanel>
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Impresión directa RAW ESC/POS (Modo Rápido sin hoja A4)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Envía comandos directos de ticket continuo para que la impresora imprima solo el largo exacto del comprobante."
+                                               Style="{StaticResource SubtitleTextStyle}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrintRawDirecto" Grid.Column="1" Style="{StaticResource PillToggleStyle}" IsChecked="True"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Corte automático de papel al finalizar ticket" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Envía el comando ESC/POS de corte inmediato al concluir la impresión."
+                                               Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrintAutoCut" Grid.Column="1" Style="{StaticResource PillToggleStyle}" IsChecked="True"/>
+                            </Grid>
+                        </Border>
+
+                        <Separator Margin="12,2"/>
+
+                        <Border Padding="12,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Abrir cajón de dinero al imprimir cobro" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Envía pulso RJ11 a la gaveta de efectivo al confirmar venta contado."
+                                               Style="{StaticResource SubtitleTextStyle}"/>
+                                </StackPanel>
+                                <CheckBox x:Name="ChkPrintOpenDrawer" Grid.Column="1" Style="{StaticResource PillToggleStyle}" IsChecked="True"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="💾 Guardar Configuración de Impresión" Style="{StaticResource SuccessButtonStyle}"
+                            Padding="16,9" Margin="0,0,10,0" Click="BtnSavePrintSettings_Click"/>
+                    <Button Content="🧾 Imprimir Ticket de Prueba Corto" Style="{StaticResource PrimaryButtonStyle}"
+                            Padding="16,9" Click="BtnTestShortTicket_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 5: MULTICONEXIÓN ENTRE PCs Y RED LAN (Firewall.sql + Ini)   -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewMulticonexion" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="820">
+                <TextBlock Text="Multiconexión en Red Local (Servidor y Cajas Clientes)" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Conecta múltiples computadoras a una misma base MySQL. Todos los cambios de stock, ventas y caja se sincronizan automáticamente."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,16"/>
+
+                <Border Style="{StaticResource SoftPanelStyle}" Padding="16,14" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock x:Name="TxtNetLocalIps" Text="📡 Dirección IP de esta PC en la red local: Detectando..."
+                                       Foreground="{DynamicResource TextPrimaryBrush}" FontSize="13.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            <TextBlock Text="En las demás PCs de tu negocio, escribe esta IP como Servidor MySQL (en lugar de localhost)."
+                                       Style="{StaticResource SubtitleTextStyle}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Soy Servidor (localhost)" Style="{StaticResource SecondaryButtonStyle}"
+                                Padding="12,7" VerticalAlignment="Center"
+                                Click="BtnSetLocalhostServer_Click"/>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="20,18" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="14"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Text="IP o Host del servidor MySQL" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtNetHost" Text="localhost" FontWeight="Bold" FontSize="14"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Text="Puerto" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtNetPort" Text="3306" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="4">
+                            <TextBlock Text="Base de datos" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtNetDatabase" Text="firewallcontrol" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.Column="0">
+                            <TextBlock Text="Usuario MySQL" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtNetUser" Text="root" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="2">
+                            <TextBlock Text="Contraseña" Style="{StaticResource FieldLabelStyle}"/>
+                            <PasswordBox x:Name="PwdNetPassword"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="4">
+                            <TextBlock Text="N° Caja de esta PC" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtNetIdCajaLocal" Text="1" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="16,14" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Sincronización automática en tiempo real (Multi-PC LAN)" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Actualiza cotizaciones, stock, productos, cajas abiertas y movimientos cada 8 segundos entre terminales."
+                                       Style="{StaticResource SubtitleTextStyle}"/>
+                        </StackPanel>
+                        <CheckBox x:Name="ChkNetSyncRealTime" Grid.Column="1" Style="{StaticResource PillToggleStyle}" IsChecked="True"/>
+                    </Grid>
+                </Border>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="🔌 Probar Conexión Ahora" Style="{StaticResource PrimaryButtonStyle}"
+                            Padding="16,9" Margin="0,0,10,0" Click="BtnTestNetworkConnection_Click"/>
+                    <Button Content="💾 Guardar Red en FireWall.Ini y Sincronizar" Style="{StaticResource SuccessButtonStyle}"
+                            Padding="16,9" Click="BtnSaveNetworkConnection_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 6: USUARIOS, CONTRASEÑAS Y RANGOS                           -->
+        <!-- ================================================================ -->
+        <Grid x:Name="ViewUsuarios" Grid.Row="1" Visibility="Collapsed" Margin="24,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.15*"/>
+                <ColumnDefinition Width="18"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Lista de Usuarios -->
+            <Border Grid.Column="0" Style="{StaticResource AtelierCardStyle}" Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Usuarios registrados" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock Text="Haz clic en un usuario para editar su rango o contraseña" Style="{StaticResource SubtitleTextStyle}"/>
+                        </StackPanel>
+                        <Button Content="+ Nuevo Usuario" Style="{StaticResource PrimaryButtonStyle}"
+                                Padding="12,7" HorizontalAlignment="Right" VerticalAlignment="Center" Click="BtnNewUser_Click"/>
+                    </Grid>
+
+                    <DataGrid x:Name="GridConfigUsers" Grid.Row="1"
+                              AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                              BorderThickness="0"
+                              SelectionChanged="GridConfigUsers_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Usuario" Binding="{Binding Cidusuario}" Width="110" FontWeight="Bold"/>
+                            <DataGridTextColumn Header="Nombre Completo" Binding="{Binding Cdescribe}" Width="*"/>
+                            <DataGridTextColumn Header="Rango" Binding="{Binding Cidgrupo}" Width="90"/>
+                            <DataGridTextColumn Header="Caja" Binding="{Binding IdCaja}" Width="55"/>
+                            <DataGridTextColumn Header="Estado" Binding="{Binding EstadoDisplay}" Width="75"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Border Grid.Row="2" Style="{StaticResource SoftPanelStyle}" Padding="12,10" Margin="0,12,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Solicitar inicio de sesión (usuario y clave) al abrir el POS:" VerticalAlignment="Center"
+                                       Style="{StaticResource SubtitleTextStyle}" FontWeight="SemiBold"/>
+                            <CheckBox x:Name="ChkSolicitarLoginInicio" Grid.Column="1" Style="{StaticResource PillToggleStyle}"
+                                      Checked="OnPreferenceToggleChanged" Unchecked="OnPreferenceToggleChanged"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Editor de Usuario y Rango -->
+            <Border Grid.Column="2" Style="{StaticResource AtelierCardStyle}" Padding="20,18">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock x:Name="TxtUserFormTitle" Text="Ficha de usuario y permisos de rango"
+                                   Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,14"/>
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Código login (ej: CAJA1)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgUsrLogin" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Rango / grupo" Style="{StaticResource FieldLabelStyle}"/>
+                                <ComboBox x:Name="CmbCfgUsrGrupo" SelectionChanged="CmbCfgUsrGrupo_SelectionChanged">
+                                    <ComboBoxItem Content="ADMIN" Tag="ADMIN"/>
+                                    <ComboBoxItem Content="CAJERO" Tag="CAJERO"/>
+                                    <ComboBoxItem Content="VENDEDOR" Tag="VENDEDOR"/>
+                                    <ComboBoxItem Content="SUPERVISOR" Tag="SUPERVISOR"/>
+                                    <ComboBoxItem Content="DEPOSITO" Tag="DEPOSITO"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Nombre completo del usuario" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBox x:Name="TxtCfgUsrNombre" FontWeight="Bold" Margin="0,0,0,12"/>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="85"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="85"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Contraseña (dejar vacío para mantener)" Style="{StaticResource FieldLabelStyle}"/>
+                                <PasswordBox x:Name="PwdCfgUsrPass"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Caja #" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgUsrCaja" Text="1"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Depósito" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgUsrDeposito" Text="1"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Permisos habilitados para este rango (12 botones _FONDO)" Style="{StaticResource FieldLabelStyle}" Margin="0,0,0,6"/>
+                        <Border Style="{StaticResource SoftPanelStyle}" Padding="12,8" Margin="0,0,0,12">
+                            <WrapPanel>
+                                <CheckBox x:Name="ChkPermVenta" Content="Punto de Venta" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermCompra" Content="Compras" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermProducto" Content="Productos" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermCliente" Content="Clientes" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermProveedor" Content="Proveedores" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermCaja" Content="Mov. de Caja" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermPedido" Content="Pedidos" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermPresu" Content="Presupuestos" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermVenci" Content="Vencimientos" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermVendedor" Content="Vendedores" IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermPago" Content="Pagos Prov." IsChecked="True" Width="155" Margin="0,3"/>
+                                <CheckBox x:Name="ChkPermCobro" Content="Cobros Cli." IsChecked="True" Width="155" Margin="0,3"/>
+                            </WrapPanel>
+                        </Border>
+
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Matriz de accesos de menú (grupos.caccesos · líneas L1–L8)" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center"/>
+                            <Button Content="Generar desde checks" Style="{StaticResource SecondaryButtonStyle}" FontSize="11"
+                                    Padding="8,3" HorizontalAlignment="Right" Click="BtnBuildCaccesosFromChecks_Click"/>
+                        </Grid>
+                        <TextBox x:Name="TxtCfgCaccesos" Height="74" AcceptsReturn="True" FontFamily="Consolas" FontSize="11.5"
+                                 VerticalScrollBarVisibility="Auto" Margin="0,0,0,12"/>
+
+                        <WrapPanel>
+                            <Button Content="💾 Guardar Usuario y Rango" Style="{StaticResource SuccessButtonStyle}"
+                                    Padding="14,8" Margin="0,0,8,8" Click="BtnSaveConfigUser_Click"/>
+                            <Button Content="🔓 Activar" Style="{StaticResource SecondaryButtonStyle}"
+                                    Padding="12,8" Margin="0,0,8,8" Click="BtnActivateSelectedUser_Click"/>
+                            <Button Content="🗑 Desactivar" Style="{StaticResource SoftDangerButtonStyle}"
+                                    Padding="12,8" Margin="0,0,0,8" Click="BtnDeleteConfigUser_Click"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 7: DATOS DE EMPRESA, TIMBRADO Y UTILIDADES                  -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewEmpresa" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="820">
+                <TextBlock Text="1. Identidad fiscal y timbrado" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Información fiscal impresa en los tickets, comprobantes legales y encabezado comercial."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Razón social / nombre del negocio" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgEmpNombre" FontWeight="Bold" FontSize="14"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="RUC" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgEmpRuc" FontWeight="Bold" FontSize="14"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Dirección" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgEmpDir"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Teléfono" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgEmpTel"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Timbrado vigente" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgTimbrado" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Lista de precios activa (1..7)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtCfgListaPrecios" Text="1" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="2. Operación comercial, modos y crédito" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Módulos habilitados en el tablero principal y parámetros por defecto para cuentas a plazo."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Cobro integrado en caja" FontSize="14.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                <TextBlock Text="Permite procesar el cobro directamente desde la ventana de facturación sin paso externo."
+                                           Style="{StaticResource SubtitleTextStyle}"/>
+                            </StackPanel>
+                            <CheckBox x:Name="ChkCfgCobroCaja" Grid.Column="1" Style="{StaticResource PillToggleStyle}" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <Border Style="{StaticResource SoftPanelStyle}" Padding="12,10" Margin="0,0,0,14">
+                            <WrapPanel VerticalAlignment="Center">
+                                <TextBlock Text="Modos del sistema:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                <CheckBox x:Name="ChkCfgComercial" Content="Comercial" IsChecked="True" Margin="0,0,16,0"/>
+                                <CheckBox x:Name="ChkCfgVeterinaria" Content="Veterinaria (habilita menú y accesos)" Margin="0,0,16,0"/>
+                                <CheckBox x:Name="ChkCfgRestaurant" Content="Restaurant (habilita comandas y mesas)" Margin="0"/>
+                            </WrapPanel>
+                        </Border>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0"><TextBlock Text="Interés Cuota (%)" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtCfgInteresCuota" Text="3"/></StackPanel>
+                            <StackPanel Grid.Column="2"><TextBlock Text="Interés Punitorio (%)" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtCfgInteresPunitorio" Text="6"/></StackPanel>
+                            <StackPanel Grid.Column="4"><TextBlock Text="Gastos Reclamos (Gs.)" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtCfgReclamos" Text="25000"/></StackPanel>
+                            <StackPanel Grid.Column="6"><TextBlock Text="Hon. Judicial (%)" Style="{StaticResource FieldLabelStyle}"/><TextBox x:Name="TxtCfgHonorarioJud" Text="10"/></StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="3. Márgenes de utilidad por defecto (Utilidad 1 al 7)" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Porcentajes aplicados por defecto al calcular precios de venta sobre el costo."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Util 1 (%)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtCfgU1" Text="35" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Util 2 (%)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtCfgU2" Text="45" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Util 3 (%)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtCfgU3" Text="60" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="Util 4 (%)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtCfgU4" Text="80"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="8">
+                            <TextBlock Text="Util 5 (%)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtCfgU5" Text="100"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="10">
+                            <TextBlock Text="Util 6 (%)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtCfgU6" Text="120"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="12">
+                            <TextBlock Text="Util 7 (%)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtCfgU7" Text="0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <WrapPanel>
+                    <Button Content="💾 Guardar Datos de Empresa y Utilidades en MySQL" Style="{StaticResource SuccessButtonStyle}"
+                            Padding="18,9" Margin="0,0,10,6" Click="BtnSaveCompanyConfig_Click"/>
+                    <Button Content="🏢 Gestionar Sucursales" Style="{StaticResource SecondaryButtonStyle}"
+                            Padding="14,9" Margin="0,0,10,6" Click="BtnOpenSucursalesCatalog_Click"/>
+                    <Button Content="🧾 Gestionar Timbrados Locales" Style="{StaticResource SecondaryButtonStyle}"
+                            Padding="14,9" Margin="0,0,0,6" Click="BtnOpenTimbradosCatalog_Click"/>
+                </WrapPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================================================================ -->
+        <!-- PAGE 8: SISTEMA, LICENCIA Y RESPALDO                             -->
+        <!-- ================================================================ -->
+        <ScrollViewer x:Name="ViewSistemaRespaldo" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" Padding="28,22">
+            <StackPanel MaxWidth="780">
+                <TextBlock Text="1. Información del sistema y licencia" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,8"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18" Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="• Motor: Sefiros POS .NET 10 WPF + MVVM" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2"/>
+                        <TextBlock Text="• Licencia: Activación Perpetua Completa (Zero restricciones de registros)" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="SemiBold" Margin="0,2"/>
+                        <TextBlock Text="• Base de Datos: MySQL Transaccional + Botonera Genes DBF" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2"/>
+                        <TextBlock Text="• Impresión: Motor RAW ESC/POS Compacto (1 copia por defecto)" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2"/>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="2. Copias de seguridad de configuración (.json)" Style="{StaticResource SectionTitleStyle}" FontSize="19" Margin="4,0,0,4"/>
+                <TextBlock Text="Respalda o restaura todas las preferencias del POS, tema, diseño y atajos personalizados."
+                           Style="{StaticResource SubtitleTextStyle}" Margin="4,0,0,12"/>
+                <Border Style="{StaticResource AtelierCardStyle}" Padding="22,18">
+                    <WrapPanel>
+                        <Button Content="⬇ Exportar Respaldo (.json)" Style="{StaticResource PrimaryButtonStyle}"
+                                Padding="16,9" Margin="0,0,10,6" Click="BtnExportBackup_Click"/>
+                        <Button Content="⬆ Restaurar Respaldo (.json)" Style="{StaticResource SecondaryButtonStyle}"
+                                Padding="16,9" Margin="0,0,10,6" Click="BtnImportBackup_Click"/>
+                        <Button x:Name="BtnFactoryReset" Content="{DynamicResource Str_Settings_FactoryReset}" Style="{StaticResource SoftDangerButtonStyle}"
+                                Padding="16,9" Margin="0,0,0,6" Click="BtnFactoryReset_Click"/>
+                    </WrapPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- FOOTER BAR -->
+        <Border Grid.Row="2" Style="{StaticResource StatusBarStyle}" Padding="20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="LblFooterStatus" Grid.Column="0"
+                           Text="✓ Configuración sincronizada con preferencias locales y MySQL."
+                           Foreground="{DynamicResource SuccessTextBrush}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Content="✔ Listo y Cerrar [ESC]" Style="{StaticResource PrimaryButtonStyle}"
+                        Padding="18,8" Click="BtnSaveAndClose_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

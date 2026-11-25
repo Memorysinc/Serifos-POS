@@ -1,0 +1,245 @@
+<Window x:Class="FirewallControl.App.Views.AgendaAndOrganizerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Agenda del Día, Organizador y SMS"
+        Width="1080" Height="680"
+        MinWidth="880" MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource ScreenBgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{DynamicResource CardBgBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,0,0,1" Padding="22,14">
+            <StackPanel>
+                <TextBlock Text="COMUNICACIONES Y RECORDATORIOS" Style="{StaticResource EyebrowLabelStyle}"/>
+                <TextBlock Text="Agenda, Organizador Telefónico y Conexión SMS" Style="{StaticResource PageTitleStyle}" FontSize="21" Margin="0,2,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <TabControl x:Name="MainTabs" Grid.Row="1" Margin="18,12,18,10">
+            <!-- TAB 0: AGENDA -->
+            <TabItem Header="📅  Agenda del Día y Tareas">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Style="{StaticResource SoftPanelStyle}" Padding="12,8" Margin="0,0,0,10">
+                        <WrapPanel VerticalAlignment="Center">
+                            <TextBlock Text="Desde:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <DatePicker x:Name="DpAgDesde" Width="125" Margin="0,0,12,0"/>
+                            <TextBlock Text="Hasta:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <DatePicker x:Name="DpAgHasta" Width="125" Margin="0,0,12,0"/>
+                            <TextBlock Text="Usuario:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox x:Name="TxtAgUserFilter" Width="120" Margin="0,0,12,0"/>
+                            <CheckBox x:Name="ChkAgSoloPendientes" Content="Solo Pendientes" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <Button Content="🔍 Consultar" Style="{StaticResource PrimaryButtonStyle}" Click="BtnBuscarAgenda_Click" Padding="14,6"/>
+                        </WrapPanel>
+                    </Border>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.35*"/>
+                            <ColumnDefinition Width="14"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource AtelierCardStyle}" Padding="8">
+                            <DataGrid x:Name="GridAgenda" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                      SelectionChanged="GridAgenda_SelectionChanged" BorderThickness="0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="FECHA" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy HH:mm}" Width="125"/>
+                                    <DataGridTextColumn Header="ASUNTO" Binding="{Binding Asunto}" Width="*" FontWeight="SemiBold"/>
+                                    <DataGridTextColumn Header="AVISO" Binding="{Binding Aviso}" Width="60"/>
+                                    <DataGridTextColumn Header="USUARIO" Binding="{Binding UserId}" Width="95"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource AtelierCardStyle}" Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="Detalle del Recordatorio" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,10"/>
+                                <TextBlock Text="Fecha y Hora (dd/MM/yyyy HH:mm)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtAgFechaHora" Margin="0,3,0,8"/>
+                                <TextBlock Text="Asunto *" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtAgAsunto" Margin="0,3,0,8"/>
+                                <TextBlock Text="Notas / Detalle" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtAgNotas" AcceptsReturn="True" Height="82" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,3,0,8"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Tipo" Style="{StaticResource FieldLabelStyle}"/>
+                                        <ComboBox x:Name="CmbAgTipoReg" SelectedIndex="0" Margin="0,3,0,0">
+                                            <ComboBoxItem Content="1 - Recordatorio"/>
+                                            <ComboBoxItem Content="2 - Llamada"/>
+                                            <ComboBoxItem Content="3 - Cobranza"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Usuario" Style="{StaticResource FieldLabelStyle}"/>
+                                        <TextBox x:Name="TxtAgUsuario" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <CheckBox x:Name="ChkAgAvisoActivo" Content="Aviso Pendiente Activo (Aviso = 1)" IsChecked="True" Margin="0,0,0,12"/>
+                                <WrapPanel>
+                                    <Button Content="Nuevo" Style="{StaticResource SecondaryButtonStyle}" Click="BtnNuevoAgenda_Click" Margin="0,0,8,6"/>
+                                    <Button Content="Guardar" Style="{StaticResource SuccessButtonStyle}" Click="BtnGuardarAgenda_Click" Margin="0,0,8,6"/>
+                                    <Button Content="✔ Marcar Atendido" Style="{StaticResource PrimaryButtonStyle}" Click="BtnAtenderAgenda_Click" Margin="0,0,8,6"/>
+                                    <Button Content="Eliminar" Style="{StaticResource SoftDangerButtonStyle}" Click="BtnEliminarAgenda_Click" Margin="0,0,0,6"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 1: ORGANIZADOR -->
+            <TabItem Header="📒  Organizador Telefónico">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Style="{StaticResource SoftPanelStyle}" Padding="12,8" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Buscar contacto o teléfono:" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBox x:Name="TxtOrgFilter" Width="280" Margin="0,0,10,0"/>
+                            <Button Content="🔍 Filtrar" Style="{StaticResource PrimaryButtonStyle}" Click="BtnBuscarOrg_Click" Padding="14,6"/>
+                        </StackPanel>
+                    </Border>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.3*"/>
+                            <ColumnDefinition Width="14"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource AtelierCardStyle}" Padding="8">
+                            <DataGrid x:Name="GridOrganizador" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                      SelectionChanged="GridOrganizador_SelectionChanged" BorderThickness="0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding IdAgenda}" Width="55"/>
+                                    <DataGridTextColumn Header="NOMBRES" Binding="{Binding Nombres}" Width="*" FontWeight="SemiBold"/>
+                                    <DataGridTextColumn Header="TELÉFONO 1" Binding="{Binding Telefonos1}" Width="120"/>
+                                    <DataGridTextColumn Header="TELÉFONO 2" Binding="{Binding Telefonos2}" Width="120"/>
+                                    <DataGridTextColumn Header="TELÉFONO 3" Binding="{Binding Telefonos3}" Width="120"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource AtelierCardStyle}" Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="Ficha de Contacto" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,10"/>
+                                <TextBlock Text="Nombre Completo *" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtOrgNombres" Margin="0,3,0,8"/>
+                                <TextBlock Text="Teléfono 1 (Principal / SMS)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtOrgTel1" Margin="0,3,0,8"/>
+                                <TextBlock Text="Teléfono 2" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtOrgTel2" Margin="0,3,0,8"/>
+                                <TextBlock Text="Teléfono 3" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox x:Name="TxtOrgTel3" Margin="0,3,0,14"/>
+                                <WrapPanel>
+                                    <Button Content="Nuevo" Style="{StaticResource SecondaryButtonStyle}" Click="BtnNuevoOrg_Click" Margin="0,0,8,6"/>
+                                    <Button Content="Guardar" Style="{StaticResource SuccessButtonStyle}" Click="BtnGuardarOrg_Click" Margin="0,0,8,6"/>
+                                    <Button Content="📱 Preparar SMS" Style="{StaticResource PrimaryButtonStyle}" Click="BtnEnviarSmsContacto_Click" Margin="0,0,8,6"/>
+                                    <Button Content="Eliminar" Style="{StaticResource SoftDangerButtonStyle}" Click="BtnEliminarOrg_Click" Margin="0,0,0,6"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: ENVIO SMS & CONEXION GSM -->
+            <TabItem Header="📱  SMS y Conexión Módem (conexionsms)">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="14"/>
+                        <ColumnDefinition Width="1.1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource AtelierCardStyle}" Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Parámetros del Puerto / Módem GSM" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,10"/>
+                            <DataGrid x:Name="GridSmsConns" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                      Height="130" SelectionChanged="GridSmsConns_SelectionChanged" Margin="0,0,0,10">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding IdConexion}" Width="45"/>
+                                    <DataGridTextColumn Header="DESCRIPCIÓN" Binding="{Binding Descrip}" Width="*"/>
+                                    <DataGridTextColumn Header="COM" Binding="{Binding Puerto}" Width="55"/>
+                                    <DataGridTextColumn Header="BAUD" Binding="{Binding BautRate}" Width="75"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <TextBlock Text="Descripción Perfil" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtSmsDescrip" Margin="0,3,0,8"/>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Puerto COM#" Style="{StaticResource FieldLabelStyle}"/>
+                                    <TextBox x:Name="TxtSmsPuerto" Text="1" Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Baud Rate" Style="{StaticResource FieldLabelStyle}"/>
+                                    <ComboBox x:Name="CmbSmsBaud" IsEditable="True" Text="9600" Margin="0,3,0,0">
+                                        <ComboBoxItem Content="9600"/>
+                                        <ComboBoxItem Content="19200"/>
+                                        <ComboBoxItem Content="38400"/>
+                                        <ComboBoxItem Content="115200"/>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Paridad" Style="{StaticResource FieldLabelStyle}"/>
+                                    <ComboBox x:Name="CmbSmsParity" SelectedIndex="0" Margin="0,3,0,0">
+                                        <ComboBoxItem Content="N"/>
+                                        <ComboBoxItem Content="E"/>
+                                        <ComboBoxItem Content="O"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+                            <CheckBox x:Name="ChkSmsInactivo" Content="Conexión Inactiva" Margin="0,0,0,10"/>
+                            <WrapPanel>
+                                <Button Content="Nuevo Perfil" Style="{StaticResource SecondaryButtonStyle}" Click="BtnNuevoSmsConn_Click" Margin="0,0,8,0"/>
+                                <Button Content="Guardar Conexión" Style="{StaticResource SuccessButtonStyle}" Click="BtnGuardarSmsConn_Click"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource AtelierCardStyle}" Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Envío de SMS (envio_sms)" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,10"/>
+                            <TextBlock Text="Número Destino *" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtSmsDestino" FontSize="14" FontWeight="Bold" Margin="0,3,0,10"/>
+                            <TextBlock Text="Mensaje SMS (máx. 160 caracteres)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtSmsMensaje" AcceptsReturn="True" Height="110" TextWrapping="Wrap" MaxLength="160" Margin="0,3,0,10"/>
+                            <WrapPanel Margin="0,0,0,12">
+                                <Button Content="📤 Generar Comando AT / Registrar Envío" Style="{StaticResource PrimaryButtonStyle}" Click="BtnEnviarSms_Click"/>
+                            </WrapPanel>
+                            <TextBlock Text="Bitácora de Comandos AT / Estado:" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="TxtSmsLog" IsReadOnly="True" AcceptsReturn="True" Height="150"
+                                     Background="{DynamicResource InputReadOnlyBgBrush}" FontFamily="Consolas" FontSize="12" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Border Grid.Row="2" Style="{StaticResource StatusBarStyle}">
+            <TextBlock x:Name="LblStatus" Text="Listo." Foreground="{DynamicResource TextSecondaryBrush}"/>
+        </Border>
+    </Grid>
+</Window>

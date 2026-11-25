@@ -1,0 +1,109 @@
+<Window x:Class="FirewallControl.App.Views.CalculatorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Calculadora Sufer POS"
+        Width="350" Height="455"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{DynamicResource ScreenBgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+    <Window.Resources>
+        <Style x:Key="CalcBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource AtelierCardStyle}" Padding="14,12" Margin="0,0,0,10">
+            <StackPanel>
+                <Grid>
+                    <TextBlock Text="SUFER POS · CALCULADORA" Style="{StaticResource EyebrowLabelStyle}"/>
+                    <TextBlock x:Name="LblMemIndicator" Text="" Foreground="{DynamicResource SuccessTextBrush}" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
+                </Grid>
+                <TextBlock x:Name="LblExpression" Text="" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextAlignment="Right" Margin="0,4,0,2"/>
+                <TextBox x:Name="TxtDisplay" Text="0" FontSize="26" FontWeight="Bold" TextAlignment="Right" IsReadOnly="True" Padding="8,6"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource AtelierCardStyle}" Padding="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Row="0" Grid.Column="0" Content="MC" Style="{StaticResource CalcBtn}" FontSize="12" Click="BtnMem_Click"/>
+                <Button Grid.Row="0" Grid.Column="1" Content="MR" Style="{StaticResource CalcBtn}" FontSize="12" Click="BtnMem_Click"/>
+                <Button Grid.Row="0" Grid.Column="2" Content="M+" Style="{StaticResource CalcBtn}" FontSize="12" Click="BtnMem_Click"/>
+                <Button Grid.Row="0" Grid.Column="3" Content="M-" Style="{StaticResource CalcBtn}" FontSize="12" Click="BtnMem_Click"/>
+
+                <Button Grid.Row="1" Grid.Column="0" Content="%" Style="{StaticResource CalcBtn}" Click="BtnPercent_Click"/>
+                <Button Grid.Row="1" Grid.Column="1" Content="CE" Style="{StaticResource CalcBtn}" Foreground="{DynamicResource DangerTextBrush}" Click="BtnClearEntry_Click"/>
+                <Button Grid.Row="1" Grid.Column="2" Content="C" Style="{StaticResource CalcBtn}" Foreground="{DynamicResource DangerTextBrush}" Click="BtnClearAll_Click"/>
+                <Button Grid.Row="1" Grid.Column="3" Content="⌫" Style="{StaticResource CalcBtn}" Click="BtnBackspace_Click"/>
+
+                <Button Grid.Row="2" Grid.Column="0" Content="7" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="2" Grid.Column="1" Content="8" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="2" Grid.Column="2" Content="9" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="2" Grid.Column="3" Content="/" Style="{StaticResource CalcBtn}" Click="BtnOp_Click"/>
+
+                <Button Grid.Row="3" Grid.Column="0" Content="4" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="3" Grid.Column="1" Content="5" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="3" Grid.Column="2" Content="6" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="3" Grid.Column="3" Content="*" Style="{StaticResource CalcBtn}" Click="BtnOp_Click"/>
+
+                <Button Grid.Row="4" Grid.Column="0" Content="1" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="4" Grid.Column="1" Content="2" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="4" Grid.Column="2" Content="3" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="4" Grid.Column="3" Content="-" Style="{StaticResource CalcBtn}" Click="BtnOp_Click"/>
+
+                <Button Grid.Row="5" Grid.Column="0" Content="√" Style="{StaticResource CalcBtn}" Click="BtnSqrt_Click"/>
+                <Button Grid.Row="5" Grid.Column="1" Content="0" Style="{StaticResource CalcBtn}" Click="BtnDigit_Click"/>
+                <Button Grid.Row="5" Grid.Column="2" Content="." Style="{StaticResource CalcBtn}" Click="BtnDot_Click"/>
+                <Grid Grid.Row="5" Grid.Column="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="+" Style="{StaticResource CalcBtn}" Click="BtnOp_Click"/>
+                    <Button Grid.Column="1" Content="=" Style="{StaticResource CalcBtn}" Background="#059669" Foreground="White" Click="BtnEquals_Click"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="📋 Copiar" Style="{StaticResource SecondaryButtonStyle}" Padding="11,6" Click="BtnCopy_Click" Margin="0,0,6,0"/>
+                <Button x:Name="BtnUseValue" Content="✔ Usar Valor" Style="{StaticResource SuccessButtonStyle}" Padding="11,6" Click="BtnUse_Click" Visibility="Collapsed"/>
+            </StackPanel>
+            <Button Content="Salir [ESC]" IsCancel="True" Style="{StaticResource GhostButtonStyle}" HorizontalAlignment="Right" Padding="12,6"/>
+        </Grid>
+    </Grid>
+</Window>

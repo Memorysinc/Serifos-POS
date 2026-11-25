@@ -1,0 +1,77 @@
+<Window x:Class="FirewallControl.App.Views.BuscarPresupuestosImportDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Importar Presupuesto a Venta"
+        Width="920" Height="600"
+        MinWidth="760" MinHeight="480"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ScreenBgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="185"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource AtelierCardStyle}" Padding="14,10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Buscar Presupuesto (Nro / Cliente / RUC):" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox x:Name="TxtFilter" Grid.Column="1" KeyDown="TxtFilter_KeyDown"/>
+                <Button Grid.Column="2" Content="🔍 Buscar" Style="{StaticResource PrimaryButtonStyle}" Margin="8,0,0,0" Click="BtnSearch_Click"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource AtelierCardStyle}" Padding="6" Margin="0,0,0,10">
+            <DataGrid x:Name="GridBudgets" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                      BorderThickness="0" SelectionChanged="GridBudgets_SelectionChanged" MouseDoubleClick="GridBudgets_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="NRO. PRESUP." Binding="{Binding NroPresupuesto}" Width="105" FontWeight="Bold"/>
+                    <DataGridTextColumn Header="FECHA" Binding="{Binding FechaPresupuesto, StringFormat=dd/MM/yyyy}" Width="95"/>
+                    <DataGridTextColumn Header="RUC" Binding="{Binding RucCliente}" Width="105"/>
+                    <DataGridTextColumn Header="CLIENTE" Binding="{Binding NombreCliente}" Width="*" FontWeight="SemiBold"/>
+                    <DataGridTextColumn Header="TOTAL (Gs.)" Binding="{Binding TotalPresupuesto, StringFormat=N0}" Width="120" FontWeight="Bold"/>
+                    <DataGridTextColumn Header="OBSERVACIÓN" Binding="{Binding Observacion}" Width="180"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource AtelierCardStyle}" Padding="10,8" Margin="0,0,0,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="ÍTEMS DEL PRESUPUESTO SELECCIONADO" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,6"/>
+                <DataGrid x:Name="GridBudgetItems" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="CÓDIGO" Binding="{Binding Codigo}" Width="115" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="DESCRIPCIÓN" Binding="{Binding Descripcion}" Width="*"/>
+                        <DataGridTextColumn Header="CANT." Binding="{Binding Cantidad, StringFormat=N2}" Width="80"/>
+                        <DataGridTextColumn Header="PRE. UNIT." Binding="{Binding PreUnitario, StringFormat=N0}" Width="105"/>
+                        <DataGridTextColumn Header="SUBTOTAL" Binding="{Binding Subtotal, StringFormat=N0}" Width="115" FontWeight="Bold"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="3">
+            <TextBlock x:Name="LblInfo" Text="Seleccione un presupuesto y haga clic en Importar [Enter]." Style="{StaticResource SubtitleTextStyle}" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancelar [ESC]" IsCancel="True" Style="{StaticResource GhostButtonStyle}" Padding="14,7" Margin="0,0,8,0"/>
+                <Button Content="✔ Importar a Venta [Enter]" Style="{StaticResource SuccessButtonStyle}" Padding="16,7" Click="BtnImport_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

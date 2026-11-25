@@ -1,0 +1,57 @@
+## Build artifacts & IDEs
+bin/
+obj/
+out/
+publish/
+staging/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+TestResults/
+*.trx
+*.coverage
+
+## Local Runtime Secrets, DB Credentials & User Configs (NEVER commit)
+FireWall.Ini
+FireWall.ini
+Firewall.sql
+preferencias_atajos.json
+fast_carga.ini
+sefiros_error.log
+*.local.json
+*.secrets.json
+
+## Portable Deploy Folders & User Backups
+ParaOtraPC*/
+Backups/
+Tickets/
+tickets_emitidos/
+
+## Legacy Visual FoxPro Data & Binary Files
+*.dbf
+*.cdx
+*.fpt
+*.DBF
+*.CDX
+*.FPT
+*.fxp
+*.FXP
+*.prg
+*.scx
+*.sct
+*.pjx
+*.pjt
+*.err
+*.ERR
+*.exe
+*.dll
+*.pdb
+
+## OS / Logs
+Thumbs.db
+Desktop.ini
+*.log

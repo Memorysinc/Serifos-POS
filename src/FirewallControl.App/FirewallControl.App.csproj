@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\FirewallControl.Core\FirewallControl.Core.csproj" />
+    <ProjectReference Include="..\FirewallControl.Infrastructure\FirewallControl.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\FoxIcons\*.*" />
+    <Resource Include="Assets\sefiros_pos.ico" />
+    <Resource Include="Assets\sefiros_pos_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Assets\sefiros_pos.ico" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <AssemblyName>Sefiros.App</AssemblyName>
+    <RootNamespace>FirewallControl.App</RootNamespace>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\sefiros_pos.ico</ApplicationIcon>
+    <Product>Sefiros POS</Product>
+    <Company>Sefiros POS</Company>
+    <Version>1.0.0</Version>
+    <AssemblyTitle>Sefiros POS</AssemblyTitle>
+    <FileDescription>Sefiros POS — Sistema de Gestión Comercial y Punto de Venta</FileDescription>
+  </PropertyGroup>
+
+</Project>

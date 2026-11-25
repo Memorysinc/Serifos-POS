@@ -1,0 +1,742 @@
+<Window x:Class="FirewallControl.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sefiros POS — Sistema de Gestión Comercial y Punto de Venta (.NET 10)"
+        Icon="pack://application:,,,/Sefiros.App;component/Assets/sefiros_pos.ico"
+        Width="1360" Height="860"
+        MinWidth="1060" MinHeight="680"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource ScreenBgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="{StaticResource AppFontFamily}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Window.Resources>
+        <Style x:Key="CrispCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource CardBgBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
+
+        <Style x:Key="TopBarActionStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource CardBgBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Margin" Value="0,0,7,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SurfaceAccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="KpiCardButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource CardBgBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                ClipToBounds="True">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FeaturedVentaTileStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ButtonPrimaryBgBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextInverseBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ButtonPrimaryBgBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="16,13">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ButtonPrimaryHoverBgBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource ButtonPrimaryHoverBgBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ButtonPrimaryPressedBgBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CrispTileButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource CardBgBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="15,12">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SurfaceAccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Barra de Menú Dinámica DBF (_MenuPrompts / _MenuBars + caccesos) -->
+        <Menu x:Name="DynamicMainMenu" Grid.Row="0" MinHeight="28"/>
+
+        <!-- Row 1: Barra Superior Limpia Estilo Sufer POS (Sin botones repetidos de Caja 1..5) -->
+        <Grid Grid.Row="1" Background="{DynamicResource CardBgBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="1"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="20,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BtnNavClientes" Style="{StaticResource TopBarActionStyle}" Click="BtnClientes_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M12,12A4,4 0 1,0 8,8A4,4 0 0,0 12,12M4,20C4,16.69 7.58,15 12,15C16.42,15 20,16.69 20,20"
+                                  Stroke="#2563EB" StrokeThickness="1.8" Width="15" Height="15" Stretch="Uniform" Margin="0,0,7,0"/>
+                            <TextBlock Text="{DynamicResource Str_Nav_Clientes}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="BtnNavProveedores" Style="{StaticResource TopBarActionStyle}" Click="BtnProveedores_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M3,7V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V9A2,2 0 0,0 19,7H12L10,5H5A2,2 0 0,0 3,7Z"
+                                  Stroke="#7C3AED" StrokeThickness="1.8" Width="15" Height="15" Stretch="Uniform" Margin="0,0,7,0"/>
+                            <TextBlock Text="{DynamicResource Str_Nav_Proveedor}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="BtnNavVendedores" Style="{StaticResource TopBarActionStyle}" Click="BtnVendedores_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M16,11A4,4 0 1,0 12,7A4,4 0 0,0 16,11M8,19C8,16 11,14.5 14,14.5C17,14.5 20,16 20,19"
+                                  Stroke="#16A34A" StrokeThickness="1.8" Width="15" Height="15" Stretch="Uniform" Margin="0,0,7,0"/>
+                            <TextBlock Text="{DynamicResource Str_Nav_Vendedor}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="BtnNavPagos" Style="{StaticResource TopBarActionStyle}" Click="BtnPagos_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M3,7H21V17H3V7M3,11H21M7,14H10"
+                                  Stroke="#E11D48" StrokeThickness="1.8" Width="15" Height="15" Stretch="Uniform" Margin="0,0,7,0"/>
+                            <TextBlock Text="{DynamicResource Str_Nav_Pagos}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="BtnNavCobros" Style="{StaticResource TopBarActionStyle}" Click="BtnCobros_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M3,6H21V18H3V6M12,15A3,3 0 1,0 9,12A3,3 0 0,0 12,15Z"
+                                  Stroke="#15803D" StrokeThickness="1.8" Width="15" Height="15" Stretch="Uniform" Margin="0,0,7,0"/>
+                            <TextBlock Text="{DynamicResource Str_Nav_Cobros}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="BtnNavCajaMov" Style="{StaticResource TopBarActionStyle}" Click="BtnCajaMov_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M4,7H20L19,17H5L4,7M9,11H15"
+                                  Stroke="#D97706" StrokeThickness="1.8" Width="15" Height="15" Stretch="Uniform" Margin="0,0,7,0"/>
+                            <TextBlock Text="{DynamicResource Str_Nav_MovCaja}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="BtnNavProductos" Style="{StaticResource TopBarActionStyle}" Click="BtnProductos_Click" Margin="0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M12,3L20,7.5V16.5L12,21L4,16.5V7.5L12,3M12,12L20,7.5M12,12V21M12,12L4,7.5"
+                                  Stroke="#4F46E5" StrokeThickness="1.8" Width="15" Height="15" Stretch="Uniform" Margin="0,0,7,0"/>
+                            <TextBlock Text="{DynamicResource Str_Nav_Productos}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+
+                <!-- Usuario + Cambiar Usuario + Tema + Ajustes + Actualizar -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0,0,0">
+                    <Border Background="{DynamicResource SurfaceAltBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="11,4" Margin="0,0,8,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock x:Name="LblCurrentUserTop" Text="ADMINISTRADOR" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock x:Name="LblCurrentGroupTop" Text="Grupo: ADMIN" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Style="{StaticResource TopBarActionStyle}" Content="{DynamicResource Str_Btn_CambiarUsuario}" Click="BtnCambiarUsuario_Click" ToolTip="Cambiar usuario activo [F12]"/>
+                    <Button Style="{StaticResource TopBarActionStyle}" Content="{DynamicResource Str_Btn_Tema}" Click="BtnOpenThemePicker_Click" ToolTip="Elegir paleta visual"/>
+                    <Button Style="{StaticResource TopBarActionStyle}" Content="{DynamicResource Str_Btn_Ajustes}" Click="BtnConfiguracionPreferenciasDirect_Click"/>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Content="{DynamicResource Str_Btn_Actualizar}" Click="BtnRefreshDashboard_Click" Padding="14,7" FontSize="12.5"/>
+                </StackPanel>
+            </Grid>
+            <Border Grid.Row="1" Height="1" Background="{DynamicResource CardBorderBrush}" SnapsToDevicePixels="True"/>
+        </Grid>
+
+        <!-- Row 2: Cuerpo del Dashboard (_FONDO Orden Sufer POS FOX + Esencia C#) -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid Margin="22,18,22,20" MaxWidth="1520">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- NIVEL SUPERIOR: 4 INDICADORES EN TIEMPO REAL CON BARRAS LATERALES DE COLOR -->
+                <UniformGrid Grid.Row="0" Columns="4" Margin="0,0,0,18">
+                    <!-- KPI 1: CATÁLOGO ACTIVO (Azul) -->
+                    <Button Style="{StaticResource KpiCardButtonStyle}" Click="BtnProductos_Click" Margin="0,0,12,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#2563EB" CornerRadius="11,0,0,11"/>
+                            <StackPanel Grid.Column="1" Margin="16,13">
+                                <TextBlock Text="{DynamicResource Str_Kpi_CatalogoActivo}" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="LblKpiProductos" Text="0" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="24"/>
+                                <TextBlock x:Name="LblKpiClientesSub" Text="0 clientes activos" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <!-- KPI 2: FLUJO DE CAJA HOY (Verde) -->
+                    <Button Style="{StaticResource KpiCardButtonStyle}" Click="BtnCajaMov_Click" Margin="0,0,12,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#16A34A" CornerRadius="11,0,0,11"/>
+                            <StackPanel Grid.Column="1" Margin="16,13">
+                                <TextBlock Text="{DynamicResource Str_Kpi_FlujoCajaHoy}" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="LblKpiCajaNeto" Text="0 Gs." Foreground="{DynamicResource SuccessTextBrush}" FontWeight="Bold" FontSize="24"/>
+                                <TextBlock x:Name="LblKpiCajaSub" Text="Ing: 0 · Egr: 0" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <!-- KPI 3: VENTAS DE HOY (Oscuro + EN LÍNEA) -->
+                    <Button Style="{StaticResource KpiCardButtonStyle}" Click="BtnInformes_Click" Margin="0,0,12,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="{DynamicResource PrimaryDarkBrush}" CornerRadius="11,0,0,11"/>
+                            <StackPanel Grid.Column="1" Margin="16,13">
+                                <Grid Margin="0,0,0,5">
+                                    <TextBlock Text="{DynamicResource Str_Kpi_VentasHoy}" Style="{StaticResource EyebrowLabelStyle}" VerticalAlignment="Center"/>
+                                    <Border Background="{DynamicResource SuccessBgBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}" BorderThickness="1" CornerRadius="12" Padding="8,2" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="LblSyncBadge" Text="● EN LÍNEA" Foreground="{DynamicResource SuccessTextBrush}" FontSize="9.5" FontWeight="Bold"/>
+                                    </Border>
+                                </Grid>
+                                <TextBlock x:Name="LblKpiVentasTotal" Text="0 Gs." Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="24"/>
+                                <TextBlock x:Name="LblKpiVentasSub" Text="0 operaciones hoy" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <!-- KPI 4: AGENDA DE HOY (Ámbar) -->
+                    <Button Style="{StaticResource KpiCardButtonStyle}" Click="BtnAgenda_Click" Margin="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#D97706" CornerRadius="11,0,0,11"/>
+                            <StackPanel Grid.Column="1" Margin="16,13">
+                                <TextBlock Text="{DynamicResource Str_Kpi_AgendaHoy}" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="LblKpiAgenda" Text="0 pendientes" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="24"/>
+                                <TextBlock x:Name="LblKpiAgendaSub" Text="Sin alertas pendientes hoy" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+                </UniformGrid>
+
+                <!-- NIVEL INFERIOR: 2 COLUMNAS (ORDEN EXACTO SUFER POS FOX) -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="410"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- ===================================================== -->
+                    <!-- COLUMNA IZQUIERDA: 1° OPERACIÓN DIARIA -> 2° ÚLTIMAS VENTAS -->
+                    <!-- ===================================================== -->
+                    <StackPanel Grid.Column="0" Margin="0,0,18,0">
+                        <!-- SECCIÓN SUPERIOR: OPERACIÓN DIARIA Y ACCESOS DIRECTOS -->
+                        <Grid Margin="2,0,0,10">
+                            <TextBlock Text="{DynamicResource Str_Sec_OperacionDiaria}" Style="{StaticResource SectionTitleStyle}" FontSize="15.5" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Str_Sec_AtajosRapidos}" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <UniformGrid Columns="3" Margin="0,0,0,10">
+                            <!-- 1. Nueva Venta (Tarjeta Oscura Destacada) -->
+                            <Button x:Name="BtnTileVenta" Style="{StaticResource FeaturedVentaTileStyle}" Click="BtnCaja1_Click" Margin="0,0,10,10">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Border Width="34" Height="34" CornerRadius="8" Background="#2FFFFFFF" HorizontalAlignment="Left">
+                                            <Path Data="M7,18A2,2 0 1,0 9,20A2,2 0 0,0 7,18M17,18A2,2 0 1,0 19,20A2,2 0 0,0 17,18M3,4H5L7.4,14.5H17.8L20,7H6"
+                                                  Stroke="#FFFFFF" StrokeThickness="1.8" Width="17" Height="17" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <Border Background="#26FFFFFF" CornerRadius="5" Padding="7,3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <TextBlock Text="Ctrl+V" Foreground="#E4E4E7" FontSize="10.5" FontWeight="SemiBold"/>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{DynamicResource Str_Tile_NuevaVenta}" Foreground="{DynamicResource TextInverseBrush}" FontWeight="Bold" FontSize="14.5"/>
+                                    <TextBlock Text="{DynamicResource Str_Tile_NuevaVentaSub}" Foreground="#D4D4D8" FontSize="11.5" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 2. Nueva Compra -->
+                            <Button x:Name="BtnTileCompra" Style="{StaticResource CrispTileButtonStyle}" Click="BtnCompras_Click" Margin="0,0,10,10">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Border Width="34" Height="34" CornerRadius="8" Background="{DynamicResource InfoBgBrush}" HorizontalAlignment="Left">
+                                            <Path Data="M4,6H20V18H4V6M12,9V15M9,12H15"
+                                                  Stroke="{DynamicResource InfoTextBrush}" StrokeThickness="1.8" Width="17" Height="17" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <Border Background="{DynamicResource SurfaceAltBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="5" Padding="7,3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <TextBlock Text="Ctrl+C" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" FontWeight="SemiBold"/>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{DynamicResource Str_Tile_NuevaCompra}" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="14.5"/>
+                                    <TextBlock Text="{DynamicResource Str_Tile_NuevaCompraSub}" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 3. Pedidos de Compras -->
+                            <Button x:Name="BtnTilePedido" Style="{StaticResource CrispTileButtonStyle}" Click="BtnPedidos_Click" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Border Width="34" Height="34" CornerRadius="8" Background="#F3E8FF" HorizontalAlignment="Left">
+                                            <Path Data="M7,4H17V20H7V4M10,8H14M10,12H14M10,16H13"
+                                                  Stroke="#7C3AED" StrokeThickness="1.8" Width="17" Height="17" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <Border Background="{DynamicResource SurfaceAltBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="5" Padding="7,3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <TextBlock Text="Ctrl+P" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" FontWeight="SemiBold"/>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{DynamicResource Str_Tile_Pedidos}" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="14.5"/>
+                                    <TextBlock Text="{DynamicResource Str_Tile_PedidosSub}" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 4. Presupuestos -->
+                            <Button x:Name="BtnTilePresup" Style="{StaticResource CrispTileButtonStyle}" Click="BtnPresupuestos_Click" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Border Width="34" Height="34" CornerRadius="8" Background="#FFF7ED" HorizontalAlignment="Left">
+                                            <Path Data="M6,3H18V21L15,19L12,21L9,19L6,21V3M9,8H15M9,12H15"
+                                                  Stroke="#EA580C" StrokeThickness="1.8" Width="17" Height="17" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <Border Background="{DynamicResource SurfaceAltBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="5" Padding="7,3" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <TextBlock Text="Ctrl+B" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" FontWeight="SemiBold"/>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{DynamicResource Str_Tile_Presupuestos}" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="14.5"/>
+                                    <TextBlock Text="{DynamicResource Str_Tile_PresupuestosSub}" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 5. Informes y Lucro -->
+                            <Button x:Name="BtnTileInformesLucro" Style="{StaticResource CrispTileButtonStyle}" Click="BtnInformeLucro_Click" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Border Width="34" Height="34" CornerRadius="8" Background="{DynamicResource SuccessBgBrush}" HorizontalAlignment="Left">
+                                            <Path Data="M4,18V10M10,18V6M16,18V12M20,18V4"
+                                                  Stroke="{DynamicResource SuccessTextBrush}" StrokeThickness="2" Width="17" Height="17" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{DynamicResource Str_Tile_InformesLucro}" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="14.5"/>
+                                    <TextBlock Text="{DynamicResource Str_Tile_InformesLucroSub}" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 6. Agenda del Día -->
+                            <Button x:Name="BtnTileAgenda" Style="{StaticResource CrispTileButtonStyle}" Click="BtnAgenda_Click" Margin="0">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Border Width="34" Height="34" CornerRadius="8" Background="{DynamicResource WarningBgBrush}" HorizontalAlignment="Left">
+                                            <Path Data="M4,7H20V20H4V7M8,4V8M16,4V8M4,11H20"
+                                                  Stroke="{DynamicResource WarningTextBrush}" StrokeThickness="1.8" Width="17" Height="17" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{DynamicResource Str_Tile_AgendaDia}" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="14.5"/>
+                                    <TextBlock x:Name="LblTileAgendaBadge" Text="{DynamicResource Str_Tile_AgendaDiaSub}" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </UniformGrid>
+
+                        <!-- FILA COMPACTA: MÓDULOS ESPECIALES Y OPERATIVOS ADICIONALES -->
+                        <WrapPanel x:Name="PanelOperationalFlags" Margin="0,0,0,14">
+                            <Button x:Name="BtnTileClientes" Style="{StaticResource TopBarActionStyle}" Click="BtnClientes_Click" Padding="11,6" Margin="0,0,7,4" Content="👥 Clientes y Cuotas"/>
+                            <Button x:Name="BtnTileRrhh" Style="{StaticResource TopBarActionStyle}" Click="BtnRrhh_Click" Padding="11,6" Margin="0,0,7,4" Content="🪪 Personales / RRHH"/>
+                            <Button Style="{StaticResource TopBarActionStyle}" Click="BtnInformes_Click" Padding="11,6" Margin="0,0,7,4" Content="📈 Informes de Ventas"/>
+                            <Button x:Name="BtnTileVencimientos" Style="{StaticResource TopBarActionStyle}" Click="BtnVencimientos_Click" Padding="11,6" Margin="0,0,7,4" Visibility="Collapsed" Content="📅 Vencimientos de Productos"/>
+                            <Button x:Name="BtnTileCobroCaja" Style="{StaticResource TopBarActionStyle}" Click="BtnCobroCaja_Click" Padding="11,6" Margin="0,0,7,4" Visibility="Collapsed" Content="💵 Cobro por Caja Integrada"/>
+                            <Button x:Name="BtnTileBalanza" Style="{StaticResource TopBarActionStyle}" Click="BtnBalanza_Click" Padding="11,6" Margin="0,0,7,4" Visibility="Collapsed" Content="⚖ Ventas Balanza (Genes)"/>
+                            <Button x:Name="BtnTileEntrega" Style="{StaticResource TopBarActionStyle}" Click="BtnEntregaMercaderia_Click" Padding="11,6" Margin="0,0,7,4" Visibility="Collapsed" Content="📦 Entrega de Mercadería"/>
+                            <Button x:Name="BtnOtrosModulos" Style="{StaticResource TopBarActionStyle}" Click="BtnOtrosModulos_Click" Padding="11,6" Margin="0,0,7,4" Content="📂 Más Módulos ▾"/>
+                        </WrapPanel>
+
+                        <!-- SECCIÓN INFERIOR: ÚLTIMAS VENTAS Y TOP VENDIDOS -->
+                        <Border Style="{StaticResource CrispCardStyle}" Padding="14,12" Margin="0,0,0,14">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="260"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" Margin="0,0,0,6">
+                                    <TextBlock Text="{DynamicResource Str_Sec_ActividadReciente}" Style="{StaticResource SectionTitleStyle}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <Button Content="{DynamicResource Str_Btn_VerInforme}" Style="{StaticResource SecondaryButtonStyle}"
+                                            HorizontalAlignment="Right" Padding="12,5" FontSize="12" Click="BtnInformes_Click"/>
+                                </Grid>
+
+                                <TabControl x:Name="FeedTabs" Grid.Row="1">
+                                    <TabItem Header="{DynamicResource Str_Tab_UltimasVentas}">
+                                        <DataGrid x:Name="GridUltimasVentas" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                                  BorderThickness="0" FontSize="12.5" MouseDoubleClick="FeedGrid_MouseDoubleClick">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Nro. Venta" Binding="{Binding NroVenta}" Width="92" FontWeight="Bold"/>
+                                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="96"/>
+                                                <DataGridTextColumn Header="Hora" Binding="{Binding Hora}" Width="75"/>
+                                                <DataGridTextColumn Header="Forma Pago" Binding="{Binding FormaPago}" Width="110"/>
+                                                <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="*"/>
+                                                <DataGridTextColumn Header="Total (Gs.)" Binding="{Binding Total, StringFormat=N0}" Width="125" FontWeight="Bold">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                            <Setter Property="Padding" Value="0,0,8,0"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </TabItem>
+
+                                    <TabItem Header="{DynamicResource Str_Tab_TopVendidos}">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock x:Name="LblTopPeriodo" Grid.Row="0" Text="RANKING DE HOY" Style="{StaticResource EyebrowLabelStyle}" Margin="4,4,0,4"/>
+                                            <DataGrid x:Name="GridTopVendidos" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                                      BorderThickness="0" FontSize="12.5" MouseDoubleClick="FeedGrid_MouseDoubleClick">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="105" FontWeight="Bold"/>
+                                                    <DataGridTextColumn Header="Producto" Binding="{Binding Producto}" Width="*"/>
+                                                    <DataGridTextColumn Header="Cant." Binding="{Binding Cantidad, StringFormat=N2}" Width="80"/>
+                                                    <DataGridTextColumn Header="Venta (Gs.)" Binding="{Binding TotalVenta, StringFormat=N0}" Width="115" FontWeight="Bold"/>
+                                                    <DataGridTextColumn Header="Gan. Est. (Gs.)" Binding="{Binding GananciaEstimada, StringFormat=N0}" Width="115" FontWeight="SemiBold"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </Grid>
+                                    </TabItem>
+                                </TabControl>
+                            </Grid>
+                        </Border>
+
+                        <!-- PANEL CONDICIONAL: VETERINARIA (datosempresa.veterinaria = 1) -->
+                        <Border x:Name="PanelVeterinaria" Style="{StaticResource CrispCardStyle}" Padding="14,10" Margin="0,0,0,12" Visibility="Collapsed">
+                            <StackPanel>
+                                <TextBlock Text="🐾 MÓDULO VETERINARIA (ACTIVO SEGÚN EMPRESA)" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,8"/>
+                                <WrapPanel>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🐶 Pacientes" Padding="12,6" Margin="0,0,8,4" Click="BtnVetPacientes_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="✂ Peluquería" Padding="12,6" Margin="0,0,8,4" Click="BtnVetPeluqueria_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="💉 Vacunas Pendientes" Padding="12,6" Margin="0,0,8,4" Click="BtnVetVacunas_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🔔 Avisos Clínicos" Padding="12,6" Margin="0,0,8,4" Click="BtnVetAvisos_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🏠 Guardería" Padding="12,6" Margin="0,0,8,4" Click="BtnVetGuarderia_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🥣 Dosis Alimentos" Padding="12,6" Margin="0,0,8,4" Click="BtnVetAlimentos_Click"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- PANEL CONDICIONAL: RESTAURANT (datosempresa.restaurant = 1) -->
+                        <Border x:Name="PanelRestaurant" Style="{StaticResource CrispCardStyle}" Padding="14,10" Margin="0,0,0,12" Visibility="Collapsed">
+                            <StackPanel>
+                                <TextBlock Text="🍽 MÓDULO RESTAURANT Y COMANDAS (ACTIVO SEGÚN EMPRESA)" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,8"/>
+                                <WrapPanel>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🍳 Comanda Cocina" Padding="12,6" Margin="0,0,8,4" Click="BtnRestCocina_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🪑 Mapa de Mesas" Padding="12,6" Margin="0,0,8,4" Click="BtnRestMesas_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🧑‍🍳 Mozos / Salón" Padding="12,6" Margin="0,0,8,4" Click="BtnRestMozos_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🍸 Barra / Otros" Padding="12,6" Margin="0,0,8,4" Click="BtnRestOtros_Click"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ===================================================== -->
+                    <!-- COLUMNA DERECHA: COTIZACIONES DEL DÍA + SEFIROS POS   -->
+                    <!-- ===================================================== -->
+                    <StackPanel Grid.Column="1">
+
+                        <!-- Tarjeta 1: Cotizaciones del Día con pills Compra (Azul) / Venta (Verde) -->
+                        <Border Style="{StaticResource CrispCardStyle}" Padding="16,14" Margin="0,0,0,16">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,10">
+                                    <TextBlock Text="{DynamicResource Str_Sec_CotizacionesDia}" Style="{StaticResource SectionTitleStyle}" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <Button Content="{DynamicResource Str_Btn_Refrescar}" Style="{StaticResource SecondaryButtonStyle}"
+                                            HorizontalAlignment="Right" Padding="12,5" FontSize="11.5" Click="BtnRefreshDashboard_Click"/>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="96"/>
+                                        <ColumnDefinition Width="96"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{DynamicResource Str_Col_Moneda}" Style="{StaticResource EyebrowLabelStyle}"/>
+                                    <TextBlock Grid.Column="1" Text="{DynamicResource Str_Col_Compra}" Foreground="{DynamicResource InfoTextBrush}" FontSize="10.5" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                                    <TextBlock Grid.Column="2" Text="{DynamicResource Str_Col_Venta}" Foreground="{DynamicResource SuccessTextBrush}" FontSize="10.5" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,6,0"/>
+                                </Grid>
+
+                                <!-- USD -->
+                                <Grid Margin="0,0,0,7">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="96"/><ColumnDefinition Width="96"/></Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="USD · Dólar" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Background="{DynamicResource InfoBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0">
+                                        <TextBlock x:Name="LblCompraDolar" Text="0.00" Foreground="{DynamicResource InfoTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                    <Border Grid.Column="2" Background="{DynamicResource SuccessBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0,0,0">
+                                        <TextBlock x:Name="LblVentaDolar" Text="0.00" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                </Grid>
+
+                                <!-- BRL -->
+                                <Grid Margin="0,0,0,7">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="96"/><ColumnDefinition Width="96"/></Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="BRL · Real" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Background="{DynamicResource InfoBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0">
+                                        <TextBlock x:Name="LblCompraReal" Text="0.00" Foreground="{DynamicResource InfoTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                    <Border Grid.Column="2" Background="{DynamicResource SuccessBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0,0,0">
+                                        <TextBlock x:Name="LblVentaReal" Text="0.00" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                </Grid>
+
+                                <!-- ARS -->
+                                <Grid Margin="0,0,0,7">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="96"/><ColumnDefinition Width="96"/></Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="ARS · Peso" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Background="{DynamicResource InfoBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0">
+                                        <TextBlock x:Name="LblCompraPeso" Text="0.00" Foreground="{DynamicResource InfoTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                    <Border Grid.Column="2" Background="{DynamicResource SuccessBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0,0,0">
+                                        <TextBlock x:Name="LblVentaPeso" Text="0.00" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                </Grid>
+
+                                <!-- EUR -->
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="96"/><ColumnDefinition Width="96"/></Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="EUR · Euro" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Background="{DynamicResource InfoBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0">
+                                        <TextBlock x:Name="LblCompraEuro" Text="0.00" Foreground="{DynamicResource InfoTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                    <Border Grid.Column="2" Background="{DynamicResource SuccessBgBrush}" CornerRadius="6" Padding="10,5" Margin="4,0,0,0">
+                                        <TextBlock x:Name="LblVentaEuro" Text="0.00" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </Border>
+                                </Grid>
+
+                                <Separator Margin="0,0,0,8"/>
+                                <TextBlock x:Name="LblRatesUpdated" Text="Última actualización: --:--:-- · Automática" Foreground="{DynamicResource TextMutedBrush}" FontSize="11"/>
+                                <TextBlock x:Name="LblLiveServerDetail" Text="MySQL: localhost:3306 (firewallcontrol)" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Tarjeta 2: Marca Sefiros POS + Licencia + Empresa + Config Rápida -->
+                        <Border Style="{StaticResource CrispCardStyle}" Padding="16,15">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,12">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="pack://application:,,,/Sefiros.App;component/Assets/sefiros_pos_logo.png"
+                                               Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,11,0"/>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="Sefiros" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                <Border Background="{DynamicResource SurfaceAltBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="5" Padding="6,1" Margin="7,0,0,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="POS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource SuccessTextBrush}"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Text="{DynamicResource Str_Brand_Tagline}" Foreground="{DynamicResource TextMutedBrush}" FontSize="11"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <Border Background="{DynamicResource SuccessBgBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="9,4" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                        <TextBlock Text="{DynamicResource Str_Badge_LicenciaActiva}" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="Bold" FontSize="10"/>
+                                    </Border>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="105"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Empresa:" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,0,0,5"/>
+                                    <TextBlock x:Name="LblEmpresaNombre" Grid.Row="0" Grid.Column="1" Text="SEFIROS POS" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Detalles:" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,0,0,5"/>
+                                    <TextBlock x:Name="LblEmpresaSub" Grid.Row="1" Grid.Column="1" Text="Sistema Comercial .NET 10 + MySQL" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Registrado a:" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,0,0,5"/>
+                                    <TextBlock x:Name="LblLicenseStatus" Grid.Row="2" Grid.Column="1" Text="✔ SISTEMA LICENCIADO - SEFIROS POS" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="SemiBold" FontSize="11.5" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Licencia de Uso:" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5" Margin="0,0,0,5"/>
+                                    <TextBlock x:Name="LblLicenseSerial" Grid.Row="3" Grid.Column="1" Text="SEFIROS-NET10-FULL-EDITION" Foreground="{DynamicResource InfoTextBrush}" FontWeight="SemiBold" FontSize="11.5" Margin="0,0,0,5"/>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Fecha:" Foreground="{DynamicResource TextMutedBrush}" FontSize="11.5"/>
+                                    <TextBlock x:Name="LblTodayDate" Grid.Row="4" Grid.Column="1" Text="" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11"/>
+                                </Grid>
+
+                                <!-- Badges Modo & Stock Global -->
+                                <WrapPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <Border Style="{StaticResource BadgePillStyle}" Padding="9,3" Margin="0,0,6,4">
+                                        <TextBlock x:Name="LblModeBadge" Text="Sistema Comercial POS" Foreground="{DynamicResource TextPrimaryBrush}" FontSize="10.5" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border x:Name="BadgeStockGlobal" Background="{DynamicResource SuccessBgBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}" BorderThickness="1" CornerRadius="12" Padding="9,3" Margin="0,0,0,4">
+                                        <TextBlock x:Name="LblBadgeStockGlobal" Text="● CONTROL DE STOCK ACTIVO" Foreground="{DynamicResource SuccessTextBrush}" FontWeight="SemiBold" FontSize="10.5"/>
+                                    </Border>
+                                </WrapPanel>
+
+                                <!-- Accesos rápidos configuración -->
+                                <UniformGrid Columns="3" Margin="0,0,0,10">
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="📦 Stock" Padding="6,5" FontSize="11" Margin="0,0,5,0" Click="BtnAbrirPreferenciasStock_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🖨 Tickets" Padding="6,5" FontSize="11" Margin="0,0,5,0" Click="BtnAbrirImpresoraTicket_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="🌐 MySQL" Padding="6,5" FontSize="11" Margin="0" Click="BtnServidor_Click"/>
+                                </UniformGrid>
+
+                                <UniformGrid Columns="2">
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="{DynamicResource Str_Btn_Minimizar}" Padding="8,8" FontSize="12" Margin="0,0,6,0" Click="BtnMinimizar_Click"/>
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" Content="{DynamicResource Str_Btn_AcercaDe}" Padding="8,8" FontSize="12" Margin="0" Click="BtnAcercaDe_Click"/>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Row 3: Barra de Estado Inferior -->
+        <Border Grid.Row="3" Background="{DynamicResource CardBgBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,1,0,0" Padding="20,7">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="7" Height="7" Fill="#16A34A" Margin="0,0,7,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Sefiros POS · Usuario: " Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" FontSize="11.5"/>
+                    <TextBlock x:Name="LblCurrentUser" Text="ADMINISTRA [ADMIN]" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" FontSize="11.5" Margin="0,0,14,0"/>
+                    <TextBlock Text="Estación / MySQL: " Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" FontSize="11.5"/>
+                    <TextBlock x:Name="LblServerInfo" Text="localhost:3306 / firewallcontrol" Foreground="{DynamicResource InfoTextBrush}" FontWeight="SemiBold" FontSize="11.5"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="F1..F5 Cajas POS · F3 Productos · F4 Ajustes · F9 Carga IA (Selector)" Foreground="{DynamicResource TextMutedBrush}" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock x:Name="LblClock" Grid.Column="2" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" FontSize="11.5" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

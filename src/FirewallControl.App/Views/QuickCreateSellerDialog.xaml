@@ -1,0 +1,40 @@
+<Window x:Class="FirewallControl.App.Views.QuickCreateSellerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nuevo Vendedor Rápido"
+        Width="420" Height="280"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ScreenBgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+    <Grid Margin="18">
+        <Border Style="{StaticResource AtelierCardStyle}" Padding="18">
+            <StackPanel>
+                <TextBlock Text="ALTA RÁPIDA DE VENDEDOR" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,10"/>
+                <TextBlock Text="Nombre Completo *" Style="{StaticResource FieldLabelStyle}"/>
+                <TextBox x:Name="TxtNombres" CharacterCasing="Upper" FontWeight="Bold" Margin="0,0,0,8"/>
+
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Documento / C.I." Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBox x:Name="TxtDocumento"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Teléfono" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBox x:Name="TxtTelefono"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Cancelar [ESC]" IsCancel="True" Style="{StaticResource GhostButtonStyle}" Margin="0,0,8,0"/>
+                    <Button Content="✔ Guardar Vendedor" Style="{StaticResource SuccessButtonStyle}" IsDefault="True" Click="BtnSave_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

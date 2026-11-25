@@ -1,0 +1,445 @@
+<Window x:Class="FirewallControl.App.Views.AbmVentasAutoserviceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding WindowTitle}"
+        Icon="pack://application:,,,/Sefiros.App;component/Assets/sefiros_pos.ico"
+        Width="1120" Height="680"
+        MinWidth="960" MinHeight="560"
+        WindowStartupLocation="Manual"
+        Background="{DynamicResource PosWindowBgBrush}"
+        Foreground="{DynamicResource PosTextPrimaryBrush}"
+        FontFamily="{StaticResource AppFontFamily}"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+    <Border BorderBrush="{DynamicResource PosPanelBorderBrush}"
+            BorderThickness="2"
+            Background="{DynamicResource PosHeroGradientBrush}"
+            Padding="16">
+        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Cabecera de Venta y Comprobante -->
+        <Border Grid.Row="0" Style="{StaticResource AtelierCardStyle}" Background="{DynamicResource PosCardBgBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" Padding="16,12" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- Indicador de Caja Activa -->
+                    <Border CornerRadius="10" Padding="14,7" Margin="0,0,16,0" BorderThickness="1.5" VerticalAlignment="Center"
+                            Background="{DynamicResource PosButtonPrimaryBgBrush}" BorderBrush="{DynamicResource PosButtonActiveBorderBrush}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="#86BEA9"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IdCaja}" Value="2">
+                                                <Setter Property="Fill" Value="#EAB308"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IdCaja}" Value="3">
+                                                <Setter Property="Fill" Value="#34D399"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IdCaja}" Value="4">
+                                                <Setter Property="Fill" Value="#A78BFA"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IdCaja}" Value="5">
+                                                <Setter Property="Fill" Value="#FB7185"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Text="{Binding IdCaja, StringFormat='CAJA {0}'}" Foreground="{DynamicResource PosButtonPrimaryFgBrush}" FontWeight="Bold" FontSize="14.5"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Margin="0,0,18,0" VerticalAlignment="Center">
+                        <TextBlock Text="NRO. OPERACIÓN" Style="{StaticResource EyebrowLabelStyle}"/>
+                        <TextBlock Text="{Binding NroVenta, StringFormat=0000000}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontSize="18" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Text="NRO. FACTURA" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,3"/>
+                        <TextBox Text="{Binding NroFactura, UpdateSourceTrigger=PropertyChanged}" Background="{DynamicResource PosInputBgBrush}" BorderBrush="{DynamicResource PosInputBorderBrush}" Width="145" FontWeight="Bold" FontSize="12.5" Padding="8,5"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,18,0" VerticalAlignment="Center">
+                        <TextBlock Text="TIMBRADO" Style="{StaticResource EyebrowLabelStyle}"/>
+                        <TextBlock Text="{Binding Timbrado}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontSize="14" FontWeight="SemiBold" Margin="0,3,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,14,0" VerticalAlignment="Center">
+                        <TextBlock Text="CONDICIÓN" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,3"/>
+                        <ComboBox SelectedValue="{Binding FormaPago}" SelectedValuePath="Tag" Background="{DynamicResource PosInputBgBrush}" BorderBrush="{DynamicResource PosInputBorderBrush}" Width="115" FontWeight="SemiBold">
+                            <ComboBoxItem Content="CONTADO" Tag="1"/>
+                            <ComboBoxItem Content="CRÉDITO" Tag="2"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="COMPROBANTE" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,3"/>
+                        <ComboBox SelectedValue="{Binding TipoBoleta}" SelectedValuePath="Tag" Background="{DynamicResource PosInputBgBrush}" BorderBrush="{DynamicResource PosInputBorderBrush}" Width="135" FontWeight="SemiBold">
+                            <ComboBoxItem Content="TICKET 80mm" Tag="1"/>
+                            <ComboBoxItem Content="FACTURA LEGAL" Tag="2"/>
+                        </ComboBox>
+                    </StackPanel>
+                </WrapPanel>
+
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <TextBlock Text="{Binding FechaVenta, StringFormat=dd/MM/yyyy}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="13.5" HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding HoraVenta}" Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="12" HorizontalAlignment="Right" Margin="0,1,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Row 1: Datos del Cliente y Vendedor -->
+        <Border Grid.Row="1" Style="{StaticResource FlatCardStyle}" Background="{DynamicResource PosCardBgBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" Padding="14,10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="190"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="RUC / C.I." Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox Grid.Column="1" Text="{Binding RucCliente, UpdateSourceTrigger=PropertyChanged}"
+                         FontWeight="Bold" Padding="8,6"
+                         KeyDown="TxtRucCliente_KeyDown"/>
+                <Button Grid.Column="2" Content="🔍 Cliente" Command="{Binding SearchCustomerCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}" Padding="11,6" Margin="8,0,16,0"/>
+
+                <TextBlock Grid.Column="3" Text="CLIENTE" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox Grid.Column="4" Text="{Binding NombreCliente, UpdateSourceTrigger=PropertyChanged}"
+                         FontWeight="SemiBold" Padding="8,6" Margin="0,0,16,0"/>
+
+                <TextBlock Grid.Column="5" Text="VENDEDOR" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <ComboBox Grid.Column="6" ItemsSource="{Binding Vendedores}"
+                          DisplayMemberPath="Nombres" SelectedValuePath="IdVendedor"
+                          SelectedValue="{Binding IdVendedor}" FontWeight="SemiBold"/>
+            </Grid>
+        </Border>
+
+        <!-- Row 2: Grilla de Ítems de la Factura (Grid1 -> cursor itemsventas) -->
+        <Border Grid.Row="2" CornerRadius="14" Padding="4" Margin="0,0,0,10">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="{DynamicResource PosPanelBorderBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Background" Value="{DynamicResource PosCardBgBrush}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ModoBorradoGrilla}" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource DangerSolidBgBrush}"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="Background" Value="{DynamicResource DangerBgBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Banner de Modo Borrado -->
+                <Border Grid.Row="0" Background="{DynamicResource DangerSolidBgBrush}" CornerRadius="10,10,0,0" Padding="12,7" Margin="0,0,0,4">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ModoBorradoGrilla}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="⚠ MODO BORRADO ACTIVO: Seleccione con Flechas ↑ ↓ y presione ENTER o SUPR para eliminar la fila, o ESC para volver al selector."
+                               Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                </Border>
+
+                <DataGrid x:Name="GridItems" Grid.Row="1"
+                          ItemsSource="{Binding Items}"
+                          SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          SelectionMode="Single"
+                          BorderThickness="0"
+                          Background="{DynamicResource PosInputBgBrush}"
+                          HorizontalGridLinesBrush="{DynamicResource PosGridLinesBrush}"
+                          RowHeight="34"
+                          FontSize="13"
+                          MouseDoubleClick="GridItems_MouseDoubleClick"
+                          PreviewKeyDown="GridItems_PreviewKeyDown">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{DynamicResource PosGridHeaderBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PosGridHeaderFgBrush}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource PosGridLinesBrush}"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="Padding" Value="10,8"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontSize" Value="11"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#" Binding="{Binding RecNo}" Width="46" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="CÓDIGO" Binding="{Binding Codigo}" Width="125" FontWeight="SemiBold"/>
+                        <DataGridTextColumn Header="DESCRIPCIÓN DEL PRODUCTO" Binding="{Binding Descripcion}" Width="*" FontWeight="SemiBold"/>
+                        <DataGridTextColumn Header="CANT." Binding="{Binding Cantidad, StringFormat=N2}" Width="85">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="PRECIO UNIT." Binding="{Binding PreUnitario, StringFormat=N0}" Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="EXENTAS" Binding="{Binding PreExenta, StringFormat=N0}" Width="95">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="IVA 5%" Binding="{Binding PreIva5, StringFormat=N0}" Width="90">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="IVA 10%" Binding="{Binding PreIva10, StringFormat=N0}" Width="105">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="SUBTOTAL" Binding="{Binding PrecioTotal, StringFormat=N0}" Width="125">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource SuccessTextBrush}"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Row 3: Panel de Totales, Stock Actual, Liquidación de IVA y Multimoneda (sumarproductos) -->
+        <Border Grid.Row="3" Style="{StaticResource AtelierCardStyle}" Background="{DynamicResource PosCardBgBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" Padding="16,12" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="265"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Subtotales, IVA y Monedas -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <WrapPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <TextBlock Text="EXENTAS: " Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11.5" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding TotalExenta, StringFormat=N0}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="12" Margin="0,0,14,0"/>
+                        <TextBlock Text="GRAV. 5%: " Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11.5" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding TotalIva5, StringFormat=N0}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="12" Margin="0,0,14,0"/>
+                        <TextBlock Text="GRAV. 10%: " Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11.5" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding TotalIva10, StringFormat=N0}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="12" Margin="0,0,14,0"/>
+                        <TextBlock Text="LIQ. IVA (5% / 10% / TOTAL): " Foreground="{DynamicResource PosAccentBlueLabelBrush}" FontSize="11.5" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding LiquidacionIva5, StringFormat=N0}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="12"/>
+                        <TextBlock Text=" / " Foreground="{DynamicResource TextMutedBrush}"/>
+                        <TextBlock Text="{Binding LiquidacionIva10, StringFormat=N0}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="12"/>
+                        <TextBlock Text=" / " Foreground="{DynamicResource TextMutedBrush}"/>
+                        <TextBlock Text="{Binding TotalImpuesto, StringFormat=N0}" Foreground="{DynamicResource PosTotalAmountBrush}" FontWeight="Bold" FontSize="12"/>
+                    </WrapPanel>
+
+                    <WrapPanel Orientation="Horizontal" Margin="0,0,0,4">
+                        <Border Style="{StaticResource SoftPanelStyle}" Background="{DynamicResource PosSurfaceAltBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" Padding="10,4" Margin="0,0,8,4">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="US$ Dólar: " Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11"/>
+                                <TextBlock Text="{Binding MonedaDolar, StringFormat=N2}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="11.5"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SoftPanelStyle}" Background="{DynamicResource PosSurfaceAltBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" Padding="10,4" Margin="0,0,8,4">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="R$ Real: " Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11"/>
+                                <TextBlock Text="{Binding MonedaReal, StringFormat=N2}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="11.5"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SoftPanelStyle}" Background="{DynamicResource PosSurfaceAltBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" Padding="10,4" Margin="0,0,8,4">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="$ Peso: " Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11"/>
+                                <TextBlock Text="{Binding MonedaPeso, StringFormat=N2}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="11.5"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SoftPanelStyle}" Background="{DynamicResource PosSurfaceAltBrush}" BorderBrush="{DynamicResource PosPanelBorderBrush}" Padding="10,4" Margin="0,0,0,4">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="€ Euro: " Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11"/>
+                                <TextBlock Text="{Binding MonedaEuro, StringFormat=N2}" Foreground="{DynamicResource PosTextPrimaryBrush}" FontWeight="Bold" FontSize="11.5"/>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+
+                    <TextBlock Text="{Binding LetrasTotal, StringFormat='SON: {0}'}" Foreground="{DynamicResource PosTextSecondaryBrush}" FontSize="11.5" FontStyle="Italic"/>
+                </StackPanel>
+
+                <!-- Cuadrito de Stock Actual del Producto Activo / Seleccionado -->
+                <Border x:Name="BorderStockActualRenovado" Grid.Column="1"
+                        MinWidth="132" MaxWidth="158"
+                        CornerRadius="10" BorderThickness="1" Padding="12,8" Margin="12,0,0,0"
+                        VerticalAlignment="Center"
+                        ToolTip="{Binding StockActualTooltip}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{DynamicResource PosSurfaceAltBrush}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource PosPanelBorderBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding TieneStockActual}" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource SuccessBgBrush}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SuccessBorderBrush}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding EsStockBajoOCero}" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource DangerBgBrush}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource DangerBorderBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <TextBlock Text="STOCK ACTUAL" FontSize="10" FontWeight="Bold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource PosTextSecondaryBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TieneStockActual}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource SuccessTextBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding EsStockBajoOCero}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource DangerTextBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="{Binding StockActualValor, StringFormat=N2}" FontSize="20" FontWeight="Bold" Margin="0,2,0,1">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource PosTextSecondaryBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TieneStockActual}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource SuccessTextBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding EsStockBajoOCero}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource DangerTextBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="{Binding StockActualProducto}"
+                                   Foreground="{DynamicResource PosTextSecondaryBrush}"
+                                   FontSize="10.5"
+                                   TextTrimming="CharacterEllipsis"
+                                   MaxWidth="134"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Descuento -->
+                <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="14,0">
+                    <TextBlock Text="DESCUENTO (Gs.)" Style="{StaticResource EyebrowLabelStyle}" Margin="0,0,0,4"/>
+                    <TextBox Text="{Binding Descuento, UpdateSourceTrigger=PropertyChanged, StringFormat=N0}"
+                             Background="{DynamicResource PosInputBgBrush}" BorderBrush="{DynamicResource PosInputBorderBrush}"
+                             Width="112" FontSize="14" FontWeight="Bold" TextAlignment="Right" Padding="8,6"/>
+                </StackPanel>
+
+                <!-- Total General -->
+                <Border Grid.Column="3" CornerRadius="12" Padding="14,12" Background="{DynamicResource PosKpiTotalBgBrush}" BorderBrush="{DynamicResource PosBigTotalBorderBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="TOTAL VENTA (GUARANÍES)" Foreground="{DynamicResource PosKpiTotalLabelBrush}" FontSize="10.5" FontWeight="Bold" HorizontalAlignment="Right"/>
+                        <TextBlock Text="{Binding TotalVenta, StringFormat=N0}" Foreground="{DynamicResource PosKpiTotalFgBrush}" FontSize="30" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Row 4: Botonera de Operaciones de Venta -->
+        <WrapPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="➕ [F2] Selector Productos" Command="{Binding OpenSelectorCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}" Padding="13,9" Margin="0,0,7,4"/>
+            <Button Content="✏ Modificar Ítem" Command="{Binding EditSelectedItemCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}" Padding="12,9" Margin="0,0,7,4"/>
+            <Button Content="🗑 [DEL] Borrar Ítem" Command="{Binding DeleteSelectedItemCommand}"
+                    Style="{StaticResource SoftDangerButtonStyle}" Padding="12,9" Margin="0,0,7,4"/>
+            <Button Content="🖨 [Z / Ctrl+P] Cobrar + Ticket" Command="{Binding SaveAndPrintCommand}"
+                    Style="{StaticResource SuccessButtonStyle}" FontWeight="Bold" Padding="15,9" Margin="0,0,7,4"/>
+            <Button Content="💾 [X / F9] Cobrar S/Imprimir" Command="{Binding SaveOnlyCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}" FontWeight="Bold" Padding="13,9" Margin="0,0,7,4"/>
+            <Button Content="🔄 [Ctrl+X] Reeditar" Command="{Binding ReeditarVentaCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}" Padding="12,9" Margin="0,0,7,4"/>
+            <Button Content="🧾 [Ctrl+Z] Reimprimir" Command="{Binding ReimprimirVentaCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}" Padding="12,9" Margin="0,0,7,4"/>
+            <Button x:Name="BtnToolsMenu" Content="🧰 Herramientas POS ▾" Click="BtnToolsMenu_Click"
+                    Style="{StaticResource SecondaryButtonStyle}" Padding="12,9" Margin="0,0,7,4">
+                <Button.ContextMenu>
+                    <ContextMenu x:Name="CtxPosTools">
+                        <MenuItem Header="Lista de Precios (P1 a P7)">
+                            <MenuItem Header="P1 — Lista 1" Command="{Binding SelectPriceListCommand}" CommandParameter="1"/>
+                            <MenuItem Header="P2 — Lista 2" Command="{Binding SelectPriceListCommand}" CommandParameter="2"/>
+                            <MenuItem Header="P3 — Lista 3" Command="{Binding SelectPriceListCommand}" CommandParameter="3"/>
+                            <MenuItem Header="P4 — Lista 4" Command="{Binding SelectPriceListCommand}" CommandParameter="4"/>
+                            <MenuItem Header="P5 — Lista 5" Command="{Binding SelectPriceListCommand}" CommandParameter="5"/>
+                            <MenuItem Header="P6 — Lista 6" Command="{Binding SelectPriceListCommand}" CommandParameter="6"/>
+                            <MenuItem Header="P7 — Lista 7" Command="{Binding SelectPriceListCommand}" CommandParameter="7"/>
+                        </MenuItem>
+                        <MenuItem Header="Restaurar Cliente 1 (Ocasional)" Command="{Binding ResetToCliente1Command}"/>
+                        <MenuItem Header="+ Nuevo Cliente Rápido" Command="{Binding QuickCreateCustomerCommand}"/>
+                        <MenuItem Header="+ Nuevo Vendedor Rápido" Command="{Binding QuickCreateSellerCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="📋 Importar Presupuesto" Command="{Binding OpenPresupuestosCommand}"/>
+                        <MenuItem Header="⚡ Carga Rápida de Productos IA [F9]" Command="{Binding OpenCargaRapidaCommand}"/>
+                        <MenuItem Header="🧾 Emisión Factura Legal" Command="{Binding OpenFacturaLegalCommand}"/>
+                        <MenuItem Header="📦 Ajuste de Stock" Command="{Binding OpenAjusteStockCommand}"/>
+                        <MenuItem Header="💳 Plan de Cuotas (Crédito)" Command="{Binding OpenCuotasCommand}"/>
+                        <MenuItem Header="🧩 Receta Producto Compuesto" Command="{Binding OpenCombinarSelectedCommand}"/>
+                        <MenuItem Header="🧮 Calculadora [C]" Command="{Binding OpenCalculatorCommand}"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button Content="✖ Cancelar / Limpiar" Command="{Binding CancelSaleCommand}"
+                    Style="{StaticResource GhostButtonStyle}" Padding="12,9" Margin="0,0,0,4"/>
+        </WrapPanel>
+
+        <!-- Row 5: Barra de Estado -->
+        <Border Grid.Row="5" Style="{StaticResource StatusBarStyle}" Background="{DynamicResource PosFooterBarBrush}" BorderBrush="{DynamicResource PosFooterBorderBrush}">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource PosFooterTextBrush}" FontWeight="SemiBold" FontSize="12"/>
+        </Border>
+        </Grid>
+    </Border>
+</Window>
