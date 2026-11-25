@@ -499,4 +499,50 @@ public class Stage4PosUxVerificationTests
         staThread.Join();
         Assert.Null(threadEx);
     }
+
+    [Fact]
+    public void CompactScreens_1024x728_And_800x560_ComputeValidCascadeSelectorAndClassicBounds()
+    {
+        var viewports = new[]
+        {
+            new Rect(0, 0, 800, 560),
+            new Rect(0, 0, 1024, 680),
+            new Rect(0, 0, 1024, 720),
+            new Rect(0, 0, 1024, 728),
+            new Rect(0, 0, 1092, 614),
+            new Rect(0, 0, 1366, 728),
+            new Rect(0, 0, 1536, 816),
+            new Rect(0, 0, 1920, 1040)
+        };
+
+        foreach (var work in viewports)
+        {
+            Rect sel = WindowManagerService.ComputeRenovadoSelectorBounds(work, 890, 690);
+            Assert.True(sel.Width > 0 && sel.Height > 0, $"Selector inválido en {work}: {sel}");
+            Assert.True(sel.Left >= work.Left && sel.Right <= work.Right, $"Selector Left/Right fuera de WorkArea {work}: {sel}");
+            Assert.True(sel.Top >= work.Top && sel.Bottom <= work.Bottom, $"Selector Top/Bottom fuera de WorkArea {work}: {sel}");
+
+            Rect prev = WindowManagerService.ComputeRenovadoCascadedBounds(work, 1);
+            Assert.True(prev.Width > 0 && prev.Height > 0, $"Cascada Caja 1 inválida en {work}: {prev}");
+            Assert.True(prev.Left >= work.Left && prev.Right <= work.Right, $"Caja 1 fuera horizontal en {work}: {prev}");
+            Assert.True(prev.Top >= work.Top && prev.Bottom <= work.Bottom, $"Caja 1 fuera vertical en {work}: {prev}");
+
+            for (int caja = 2; caja <= 5; caja++)
+            {
+                Rect curr = WindowManagerService.ComputeRenovadoCascadedBounds(work, caja);
+                Assert.True(curr.Left > prev.Left, $"Work={work} Caja {caja} Left={curr.Left} debe ser > Caja {caja - 1} Left={prev.Left}");
+                Assert.True(curr.Top > prev.Top, $"Work={work} Caja {caja} Top={curr.Top} debe ser > Caja {caja - 1} Top={prev.Top}");
+                Assert.Equal(prev.Width, curr.Width, 1);
+                Assert.Equal(prev.Height, curr.Height, 1);
+                Assert.True(curr.Right <= work.Right, $"Work={work} Caja {caja} excede Right: {curr}");
+                Assert.True(curr.Bottom <= work.Bottom, $"Work={work} Caja {caja} excede Bottom: {curr}");
+                prev = curr;
+            }
+
+            Rect classic = WindowManagerService.ComputeClassicSharedBounds(work);
+            Assert.True(classic.Width > 0 && classic.Height > 0, $"Classic bounds inválidos en {work}: {classic}");
+            Assert.True(classic.Left >= work.Left && classic.Right <= work.Right, $"Classic fuera horizontal en {work}: {classic}");
+            Assert.True(classic.Top >= work.Top && classic.Bottom <= work.Bottom, $"Classic fuera vertical en {work}: {classic}");
+        }
+    }
 }

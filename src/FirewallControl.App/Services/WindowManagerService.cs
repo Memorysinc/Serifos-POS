@@ -153,27 +153,74 @@ public class WindowManagerService : IWindowManagerService
         return work;
     }
 
-    private static Rect GetRenovadoCascadedBounds(int caja)
+    public static Rect ComputeRenovadoCascadedBounds(Rect work, int caja)
     {
-        Rect work = GetWorkAreaSafe();
-        double minW = Math.Min(980, Math.Max(640, work.Width - 24));
-        double maxW = Math.Max(minW, Math.Min(1140, work.Width - 150));
+        double padLeft = work.Width >= 1120 ? 16 : 8;
+        double padTop = work.Height >= 710 ? 52 : 16;
+        double stepX = work.Width >= 1120 ? 30 : (work.Width >= 900 ? 20 : 12);
+        double stepY = work.Height >= 710 ? 20 : (work.Height >= 600 ? 16 : 10);
+
+        double maxWForCascade = Math.Max(320, work.Width - padLeft - (4 * stepX));
+        double maxW = Math.Min(1140, maxWForCascade);
+        double minW = Math.Min(980, maxW);
         double renW = Math.Round(Math.Clamp(work.Width * 0.74, minW, maxW));
 
-        double minH = Math.Min(585, Math.Max(520, work.Height - 24));
-        double maxH = Math.Max(minH, Math.Min(700, work.Height - 132));
+        double maxHForCascade = Math.Max(260, work.Height - padTop - (4 * stepY));
+        double maxH = Math.Min(700, maxHForCascade);
+        double minH = Math.Min(585, maxH);
         double renH = Math.Round(Math.Clamp(work.Height - 135, minH, maxH));
 
-        double baseLeft = work.Left + 16;
-        double baseTop = work.Top + 52;
-        double stepX = 30;
-        double stepY = 20;
         int idx = Math.Clamp(caja, 1, 5) - 1;
-
-        double left = Math.Clamp(baseLeft + idx * stepX, work.Left, Math.Max(work.Left, work.Right - renW));
-        double top = Math.Clamp(baseTop + idx * stepY, work.Top, Math.Max(work.Top, work.Bottom - renH));
+        double left = Math.Clamp(work.Left + padLeft + idx * stepX, work.Left, Math.Max(work.Left, work.Right - renW));
+        double top = Math.Clamp(work.Top + padTop + idx * stepY, work.Top, Math.Max(work.Top, work.Bottom - renH));
         return new Rect(left, top, renW, renH);
     }
+
+    public static Rect ComputeRenovadoSelectorBounds(Rect work, double preferredWidth, double preferredHeight)
+    {
+        double baseW = double.IsNaN(preferredWidth) || preferredWidth <= 0 ? 890 : preferredWidth;
+        double baseH = double.IsNaN(preferredHeight) || preferredHeight <= 0 ? 690 : preferredHeight;
+
+        double maxAllowedW = Math.Max(320, Math.Min(work.Width - 16, Math.Max(760, work.Width - 220)));
+        double renSelW = Math.Round(Math.Min(baseW, Math.Min(work.Width, maxAllowedW)));
+
+        double maxAllowedH = Math.Max(260, Math.Min(work.Height - 16, Math.Max(600, work.Height - 36)));
+        double renSelH = Math.Round(Math.Min(baseH, Math.Min(work.Height, maxAllowedH)));
+
+        double maxLeft = Math.Max(work.Left, work.Right - renSelW - 16);
+        double minLeft = Math.Min(work.Left + 210, maxLeft);
+        double left = Math.Round(Math.Clamp(work.Right - renSelW - 120, minLeft, maxLeft));
+
+        double maxTop = Math.Max(work.Top, work.Bottom - renSelH);
+        double top = Math.Round(Math.Clamp(work.Top + 26, work.Top, maxTop));
+
+        return new Rect(left, top, renSelW, renSelH);
+    }
+
+    public static Rect ComputeClassicSharedBounds(Rect work)
+    {
+        double minW = Math.Min(1040, work.Width);
+        double maxW = Math.Max(minW, work.Width - 24);
+        double minH = Math.Min(640, work.Height);
+        double maxH = Math.Max(minH, work.Height - 16);
+
+        double w = Math.Round(Math.Clamp(work.Width * 0.94, minW, maxW));
+        double h = Math.Round(Math.Clamp(work.Height * 0.96, minH, maxH));
+        double l = Math.Round(work.Left + Math.Max(0, (work.Width - w) / 2.0));
+        double t = Math.Round(work.Top + Math.Max(0, (work.Height - h) / 2.0));
+        return new Rect(l, t, w, h);
+    }
+
+    private static void ClampWindowMinSizeToBounds(Window window, double width, double height)
+    {
+        if (window.MinWidth > width)
+            window.MinWidth = width;
+        if (window.MinHeight > height)
+            window.MinHeight = height;
+    }
+
+    private static Rect GetRenovadoCascadedBounds(int caja)
+        => ComputeRenovadoCascadedBounds(GetWorkAreaSafe(), caja);
 
     private void ApplyRenovadoCascadedBounds(Window window, int caja)
     {
@@ -181,6 +228,7 @@ public class WindowManagerService : IWindowManagerService
         window.WindowStartupLocation = WindowStartupLocation.Manual;
         if (window.WindowState != WindowState.Normal)
             window.WindowState = WindowState.Normal;
+        ClampWindowMinSizeToBounds(window, b.Width, b.Height);
         window.Width = b.Width;
         window.Height = b.Height;
         window.Left = b.Left;
@@ -201,12 +249,12 @@ public class WindowManagerService : IWindowManagerService
             return;
         }
 
-        double renSelW = Math.Min(double.IsNaN(selWin.Width) || selWin.Width <= 0 ? 890 : selWin.Width, Math.Max(760, work.Width - 220));
-        double renSelH = Math.Min(double.IsNaN(selWin.Height) || selWin.Height <= 0 ? 690 : selWin.Height, Math.Max(600, work.Height - 36));
-        selWin.Width = Math.Round(renSelW);
-        selWin.Height = Math.Round(renSelH);
-        selWin.Left = Math.Round(Math.Clamp(work.Right - renSelW - 120, work.Left + 210, Math.Max(work.Left, work.Right - renSelW - 16)));
-        selWin.Top = Math.Round(Math.Clamp(work.Top + 26, work.Top, Math.Max(work.Top, work.Bottom - renSelH)));
+        Rect b = ComputeRenovadoSelectorBounds(work, selWin.Width, selWin.Height);
+        ClampWindowMinSizeToBounds(selWin, b.Width, b.Height);
+        selWin.Width = b.Width;
+        selWin.Height = b.Height;
+        selWin.Left = b.Left;
+        selWin.Top = b.Top;
     }
 
     private void EnsureSharedSalesBounds()
@@ -224,8 +272,8 @@ public class WindowManagerService : IWindowManagerService
             cur.Window.Width > 200 &&
             cur.Window.Height > 200)
         {
-            _sharedSalesWidth = Math.Min(Math.Max(cur.Window.Width, 1000), work.Width);
-            _sharedSalesHeight = Math.Min(Math.Max(cur.Window.Height, 620), work.Height);
+            _sharedSalesWidth = Math.Min(Math.Max(cur.Window.Width, Math.Min(1000, work.Width)), work.Width);
+            _sharedSalesHeight = Math.Min(Math.Max(cur.Window.Height, Math.Min(620, work.Height)), work.Height);
             _sharedSalesLeft = Math.Clamp(cur.Window.Left, work.Left, Math.Max(work.Left, work.Right - _sharedSalesWidth));
             _sharedSalesTop = Math.Clamp(cur.Window.Top, work.Top, Math.Max(work.Top, work.Bottom - _sharedSalesHeight));
             return;
@@ -233,15 +281,11 @@ public class WindowManagerService : IWindowManagerService
 
         if (double.IsNaN(_sharedSalesLeft) || double.IsNaN(_sharedSalesTop))
         {
-            double minW = Math.Min(1040, work.Width);
-            double maxW = Math.Max(minW, work.Width - 24);
-            double minH = Math.Min(640, work.Height);
-            double maxH = Math.Max(minH, work.Height - 16);
-
-            _sharedSalesWidth = Math.Round(Math.Clamp(work.Width * 0.94, minW, maxW));
-            _sharedSalesHeight = Math.Round(Math.Clamp(work.Height * 0.96, minH, maxH));
-            _sharedSalesLeft = Math.Round(work.Left + Math.Max(0, (work.Width - _sharedSalesWidth) / 2.0));
-            _sharedSalesTop = Math.Round(work.Top + Math.Max(0, (work.Height - _sharedSalesHeight) / 2.0));
+            Rect shared = ComputeClassicSharedBounds(work);
+            _sharedSalesWidth = shared.Width;
+            _sharedSalesHeight = shared.Height;
+            _sharedSalesLeft = shared.Left;
+            _sharedSalesTop = shared.Top;
         }
     }
 
@@ -250,6 +294,7 @@ public class WindowManagerService : IWindowManagerService
         window.WindowStartupLocation = WindowStartupLocation.Manual;
         if (window.WindowState != WindowState.Normal)
             window.WindowState = WindowState.Normal;
+        ClampWindowMinSizeToBounds(window, _sharedSalesWidth, _sharedSalesHeight);
         window.Width = _sharedSalesWidth;
         window.Height = _sharedSalesHeight;
         window.Left = _sharedSalesLeft;

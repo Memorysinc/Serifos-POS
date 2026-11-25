@@ -5,7 +5,7 @@
         Icon="pack://application:,,,/Sefiros.App;component/Assets/sefiros_pos.ico"
         ShowInTaskbar="False"
         Width="890" Height="680"
-        MinWidth="760" MinHeight="590"
+        MinWidth="680" MinHeight="500"
         WindowStartupLocation="Manual"
         Left="500" Top="30"
         Background="{DynamicResource PosWindowBgBrush}"

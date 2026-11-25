@@ -111,9 +111,15 @@ public partial class GenesSelectorWindow : Window
             WindowState = WindowState.Normal;
         WindowStartupLocation = WindowStartupLocation.Manual;
 
-        double targetW = Math.Round(Math.Clamp(work.Width - 36, Math.Min(1180, work.Width - 16), Math.Min(1260, work.Width - 16)));
-        Width = Math.Min(targetW, work.Width);
-        Height = Math.Round(work.Height);
+        double minBoundW = Math.Min(1180, Math.Max(320, work.Width - 16));
+        double maxBoundW = Math.Min(1260, Math.Max(minBoundW, work.Width - 16));
+        double targetW = Math.Round(Math.Clamp(work.Width - 36, minBoundW, maxBoundW));
+        double finalW = Math.Min(targetW, work.Width);
+        double finalH = Math.Round(work.Height);
+        if (MinWidth > finalW) MinWidth = finalW;
+        if (MinHeight > finalH) MinHeight = finalH;
+        Width = finalW;
+        Height = finalH;
         Top = Math.Round(work.Top);
         Left = Math.Round(work.Left + Math.Max(0, (work.Width - Width) / 2.0));
     }

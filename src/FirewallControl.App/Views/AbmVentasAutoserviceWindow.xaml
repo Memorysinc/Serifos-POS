@@ -4,7 +4,7 @@
         Title="{Binding WindowTitle}"
         Icon="pack://application:,,,/Sefiros.App;component/Assets/sefiros_pos.ico"
         Width="1120" Height="680"
-        MinWidth="960" MinHeight="560"
+        MinWidth="820" MinHeight="500"
         WindowStartupLocation="Manual"
         Background="{DynamicResource PosWindowBgBrush}"
         Foreground="{DynamicResource PosTextPrimaryBrush}"

@@ -748,7 +748,7 @@ public class Stage5SefirosPolishTests
                 splash.PresentationCompleted += () => completedCount++;
 
                 splash.Show();
-                PumpDispatcher(120);
+                PumpDispatcherUntil(() => splash.IsLoaded && pathS.StrokeDashArray.Count == 2);
 
                 // Al cargarse, PathSStroke ya tiene calculado StrokeDashArray [dashUnits, dashUnits+4] para el dibujado progresivo
                 Assert.Equal(2, pathS.StrokeDashArray.Count);
@@ -789,7 +789,7 @@ public class Stage5SefirosPolishTests
 
                 // Omitir presentación ejecuta transición suave e idempotente (1 evento Ready, 1 Completed)
                 splash.SkipPresentation();
-                PumpDispatcher(220);
+                PumpDispatcherUntil(() => splash.IsPresentationCompleted);
 
                 Assert.Equal(1, readyCount);
                 Assert.Equal(1, completedCount);
@@ -997,6 +997,16 @@ public class Stage5SefirosPolishTests
         var frame = new DispatcherFrame();
         System.Threading.Tasks.Task.Delay(delayMs).ContinueWith(_ => frame.Continue = false);
         Dispatcher.PushFrame(frame);
+    }
+
+    private static void PumpDispatcherUntil(Func<bool> condition, int maxWaitMs = 2500)
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        while (!condition() && sw.ElapsedMilliseconds < maxWaitMs)
+        {
+            PumpDispatcher(25);
+        }
+        PumpDispatcher(20);
     }
 
     private static Window GetPrivateSelectorWindow(WindowManagerService wm)
