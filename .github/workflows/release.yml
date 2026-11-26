@@ -1,0 +1,96 @@
+name: Release Sefiros POS (Single-File EXE)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore .\FirewallControl.sln
+
+      - name: Build solution (Release)
+        run: dotnet build .\FirewallControl.sln --configuration Release --no-restore
+
+      - name: Run verification tests
+        run: dotnet test .\FirewallControl.sln --configuration Release --no-build --logger "console;verbosity=normal"
+
+      - name: Publish Single-File Standalone EXE (win-x64)
+        run: |
+          dotnet publish .\src\FirewallControl.App\FirewallControl.App.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:DebugType=none `
+            -p:DebugSymbols=false `
+            -o .\release_out\singlefile
+
+      - name: Package release assets and checksums
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path .\release_assets -Force | Out-Null
+          $exeSource = ".\release_out\singlefile\Sefiros.App.exe"
+          if (-not (Test-Path $exeSource)) { throw "Missing published executable: $exeSource" }
+
+          Copy-Item $exeSource ".\release_assets\Sefiros-POS-win-x64.exe" -Force
+
+          $packStage = ".\release_out\portable_pack"
+          New-Item -ItemType Directory -Path $packStage -Force | Out-Null
+          Copy-Item $exeSource (Join-Path $packStage "Sefiros.App.exe") -Force
+          Copy-Item .\database $packStage -Recurse -Force
+          Copy-Item .\config $packStage -Recurse -Force
+          Copy-Item .\README.md $packStage -Force
+          Copy-Item .\LICENSE $packStage -Force
+
+          Compress-Archive -Path "$packStage\*" -DestinationPath ".\release_assets\Sefiros-POS-win-x64-PortablePack.zip" -Force
+
+          $hashes = Get-ChildItem .\release_assets\* -File | Sort-Object Name | ForEach-Object {
+            $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$h  $($_.Name)"
+          }
+          $hashes | Set-Content .\release_assets\SHA256SUMS.txt -Encoding UTF8
+          Get-Content .\release_assets\SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+          name: "Sefiros POS ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }} — Windows x64 Standalone"
+          generate_release_notes: true
+          body: |
+            ## 🚀 Descarga Directa (1 solo EXE listo para usar)
+
+            No necesitas compilar ni instalar .NET 10:
+            1. Descarga **`Sefiros-POS-win-x64.exe`** (ejecutable único autocontenido, ~64 MB).
+            2. Haz doble clic y listo: inicia limpio en **Modo Fábrica** con el **Tema Sefiros**, **21 monedas (20 LATAM + EUR)** y **multi-idioma (`ES` · `PT` · `EN`)**.
+            3. *(Opcional)* Si quieres guardar ventas y productos de forma persistente en MySQL, descarga también **`Sefiros-POS-win-x64-PortablePack.zip`** (incluye `database/sefiros_factory_schema.sql` y plantillas `config/`) y configura tu servidor desde **⚙ Ajustes [F4] → MySQL**.
+
+            > **Nota sobre Visual FoxPro 9:** Este release contiene únicamente la aplicación moderna compilada en C# / `.NET 10`. Las reglas fiscales, flujos multicaja y atajos de teclado fueron inspirados en **Visual FoxPro 9 (`Sufer POS / FireWall Control`)**.
+          files: |
+            release_assets/Sefiros-POS-win-x64.exe
+            release_assets/Sefiros-POS-win-x64-PortablePack.zip
+            release_assets/SHA256SUMS.txt
